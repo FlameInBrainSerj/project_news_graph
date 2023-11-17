@@ -10,8 +10,8 @@
 | Portal | Number of obs. |
 |:------:|:------:|
 |[Smart Lab](https://smart-lab.ru/news/)|12472|
-|[Kommersant](https://www.kommersant.ru/finance?from=burger)|3104|
-|[РИА](https://ria.ru/economy/)|15458|
+|[Kommersant](https://www.kommersant.ru/finance?from=burger)|2480|
+|[РИА](https://ria.ru/economy/)|10138|
 |[Интерфакс](https://www.interfax.ru/business/)|14685|
 
 Ссылка на хранилище данных: [Данные](https://disk.yandex.ru/d/snDpPgzEwMECiA)

@@ -1,26 +1,15 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ParseMode
+from pathlib import Path
 
 from functionality.model.bot_model_buttons import model_btns
+from functionality.model.scrapers import websites_xpath, parse_page
+
+from utils.ner_and_clean import ner_and_clear_text
+from utils.text_messages import MODEL_INFO, INSERT_LINK_MSG, INSERT_TEXT_MSG
 
 router = Router()
-
-MODEL_INFO = f"""
-This model was created with NLP methods and aimed to make predictions of news' influence on financial instruments in accordance with certain levels
-
-_*Levels:*_
-\- *Global*: MOEX index, RVI index, RUBUSD course
-\- *Indsutry*: industrial indicies \(i\.e\. MOEXOG, MOEXEU, MOEXTL, etc\.\)
-\- *Company*: companies' share price according to ticket \(i\.e\. VKCO, SBER, YNDX, etc\.\)
-
-_*Model's output:*_ label of influence on financial instrument \(Negative, Neytral, Positive\)
-
-_*Model's constraints:*_
-\- Model was trained on Russian financial news and is only applicable to these kind of news
-\- Model is sensetive only to companies from top\-100 of Russian market basing on MOEX index
-\- It is highly recommended to pass news with no more than 1\-2 companies, otherwise results could be inadequate
-"""
 
 
 @router.callback_query(F.data == "make_prediction")
@@ -31,7 +20,21 @@ async def msg_model(callback: CallbackQuery):
     )
 
 
+def read_json_tokenizer(path):
+    # global <models>
+    # global <tokenizers>
+    pass
+
+
+def initialize_models_and_tokenizers():
+    pass
+
+
 def prediction_raw_text(text):
+    # clean+ner text
+    # tokenize text
+    # make prediction (levels 1 and 3)
+    # beautify output
     pass
 
 
@@ -43,19 +46,33 @@ async def msg_model_info(callback: CallbackQuery):
 
 @router.callback_query(F.data == "insert_link")
 async def msg_insert_link(callback: CallbackQuery):
-    pass
+    await callback.answer(cache_time=1)
+    await callback.message.answer(
+        INSERT_LINK_MSG.format(websites=[*websites_xpath.keys()]),
+        parse_mode=ParseMode.HTML,
+    )
 
 
 @router.message(F.text.contains("https"))
 async def make_prediction_link(msg: Message):
+    # parse text
+    # make prediction
     pass
 
 
 @router.callback_query(F.data == "insert_text")
 async def msg_insert_text(callback: CallbackQuery):
-    pass
+    await callback.answer(cache_time=1)
+    await callback.message.answer(
+        INSERT_TEXT_MSG,
+        parse_mode=ParseMode.HTML,
+    )
 
 
 @router.message(F.text.contains("/text"))
 async def make_prediction_text(msg: Message):
+    # make prediction
     pass
+
+
+initialize_models_and_tokenizers()

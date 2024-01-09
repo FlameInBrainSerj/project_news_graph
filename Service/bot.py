@@ -24,11 +24,11 @@ async def main():
     dp.include_routers(
         bot_start.router,
         bot_info.router,
-        bot_graph.router,
         bot_model_main.router,
         # bot_get_feedback.router,
         # bot_display_feedback.router,
         # bot_display_ticket.router,
+        bot_graph.router,
     )
 
     await bot.delete_webhook(drop_pending_updates=True)

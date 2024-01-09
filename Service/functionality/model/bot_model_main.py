@@ -126,9 +126,12 @@ async def msg_insert_link(callback: CallbackQuery):
     )
 
 
+# TODO!!!!!!!!!!!!!!!!!!!!!
 @router.message(F.text.contains("https"))
 async def make_prediction_link(msg: Message):
     url = msg.text.lower()
+    text = False
+
     try:
         if "smart-lab" in url:
             text = parse_page(url, "smartlab")
@@ -140,13 +143,14 @@ async def make_prediction_link(msg: Message):
             text = parse_page(url, "ria")
         else:
             await msg.answer("Sorry, the link you passed is invalid")
+
+        if text:
+            await msg.answer(
+                prediction_raw_text(text),
+                parse_mode=ParseMode.MARKDOWN_V2,
+            )
     except ParseError as e:
         await msg.answer(e)
-
-    await msg.answer(
-        prediction_raw_text(text),
-        parse_mode=ParseMode.MARKDOWN_V2,
-    )
 
 
 @router.callback_query(F.data == "insert_text")
@@ -158,6 +162,7 @@ async def msg_insert_text(callback: CallbackQuery):
     )
 
 
+# TODO!!!!!!!!!!!!!!!!!!!!!
 @router.message(F.text.contains("/text"))
 async def make_prediction_text(msg: Message):
     text = msg.text[5:]

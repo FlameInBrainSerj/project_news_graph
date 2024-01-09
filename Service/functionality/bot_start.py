@@ -31,7 +31,7 @@ def main_btns() -> ReplyKeyboardMarkup:
     )
     kb.row(
         InlineKeyboardButton(
-            text="Display info about the ticket", callback_data="display_ticket"
+            text="Display info about the ticker", callback_data="display_ticker"
         )
     )
     kb.row(

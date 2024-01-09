@@ -45,7 +45,7 @@ _*Model's constraints:*_
 """
 
 INSERT_LINK_MSG = """
-Please, send the link to the news in the chat
+Please, send the link to the news in the chat and wait for approximately 15 seconds
 
 *Currently only these news portals are available: {websites}
 
@@ -54,6 +54,24 @@ So, be sure to send link from one of these websites
 
 INSERT_TEXT_MSG = """
 Please, send the text to the news in the chat with '/text' before the news body
+"""
+
+PREDICTION_LEVEL_1 = """
+No companies from top\-100 of Russian financial market were found in the text of the news, that is why only effect on global financial instruments is present\.
+        
+The effect of this news on financial instruments is the following:
+        \-\-\- *MOEX index:* __{moex_index_label}__
+        \-\-\- *RVI index:* __{rvi_index_label}__
+        \-\-\- *RUBUSD course:* __{rubusd_index_label}__
+"""
+
+PREDICTION_LEVEL_3 = """
+The effect of this news on financial instruments is the following: \(including the mentioned company and associated industry\)
+        \-\-\- *Company's share price:* __{comp_share_price_label}__
+        \-\-\- *Industrial index:* __{ind_index_label}__
+        \-\-\- *MOEX index:* __{moex_index_label}__
+        \-\-\- *RVI index:* __{rvi_index_label}__
+        \-\-\- *RUBUSD course:* __{rubusd_index_label}__
 """
 
 GRAPH_MSG = """

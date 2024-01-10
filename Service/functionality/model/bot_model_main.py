@@ -1,6 +1,8 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ParseMode
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
 from keras.models import load_model
 from keras.preprocessing.text import tokenizer_from_json, Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -22,6 +24,15 @@ from utils.text_messages import (
 )
 
 router = Router()
+
+
+class ModelInference(StatesGroup):
+    """
+    Class for state changes and also container for data.
+    """
+
+    pass_link = State()
+    pass_text = State()
 
 
 @router.callback_query(F.data == "make_prediction")
@@ -118,17 +129,17 @@ async def msg_model_info(callback: CallbackQuery):
 
 
 @router.callback_query(F.data == "insert_link")
-async def msg_insert_link(callback: CallbackQuery):
+async def msg_insert_link(callback: CallbackQuery, state: FSMContext):
     await callback.answer(cache_time=1)
     await callback.message.answer(
         INSERT_LINK_MSG.format(websites=[*websites_xpath.keys()]),
         parse_mode=ParseMode.HTML,
     )
+    await state.set_state(ModelInference.pass_link)
 
 
-# TODO!!!!!!!!!!!!!!!!!!!!!
-@router.message(F.text.contains("https"))
-async def make_prediction_link(msg: Message):
+@router.message(ModelInference.pass_link)
+async def make_prediction_link(msg: Message, state: FSMContext):
     url = msg.text.lower()
     text = False
 
@@ -149,27 +160,28 @@ async def make_prediction_link(msg: Message):
                 prediction_raw_text(text),
                 parse_mode=ParseMode.MARKDOWN_V2,
             )
+
     except ParseError as e:
         await msg.answer(e)
+    finally:
+        await state.clear()
 
 
 @router.callback_query(F.data == "insert_text")
-async def msg_insert_text(callback: CallbackQuery):
+async def msg_insert_text(callback: CallbackQuery, state: FSMContext):
     await callback.answer(cache_time=1)
     await callback.message.answer(
         INSERT_TEXT_MSG,
         parse_mode=ParseMode.HTML,
     )
+    await state.set_state(ModelInference.pass_text)
 
 
-# TODO!!!!!!!!!!!!!!!!!!!!!
-@router.message(F.text.contains("/text"))
-async def make_prediction_text(msg: Message):
+@router.message(ModelInference.pass_text)
+async def make_prediction_text(msg: Message, state: FSMContext):
     text = msg.text[5:]
     await msg.answer(
         prediction_raw_text(text),
         parse_mode=ParseMode.MARKDOWN_V2,
     )
-
-
-initialize_models_and_tokenizers()
+    await state.clear()

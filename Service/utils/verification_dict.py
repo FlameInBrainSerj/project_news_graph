@@ -213,3 +213,5 @@ additional_stopwords = [
     "никто",
     "это",
 ]
+
+available_scores = ["1", "2", "3", "4", "5"]

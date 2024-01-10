@@ -53,7 +53,7 @@ So, be sure to send link from one of these websites
 """
 
 INSERT_TEXT_MSG = """
-Please, send the text to the news in the chat with '/text' before the news body
+Please, send the text of the news in the chat
 """
 
 PREDICTION_LEVEL_1 = """
@@ -73,6 +73,16 @@ The effect of this news on financial instruments is the following: \(including t
         \-\-\- *RVI index:* __{rvi_index_label}__
         \-\-\- *RUBUSD course:* __{rubusd_index_label}__
 """
+
+TICKER_DESCRIPTION = """
+Open — the opening price of the previous trading hour
+Close — the closing price of the previous trading hour
+Highest — the highest price for the previous trading hour
+Lowest — the lowest price for the previous trading hour
+Value — combined value of all operations in the previous trading hour
+Volume — amount of trades in the previous trading hour
+Begin — the start of the previous trading hour
+End — the end of the previous trading hour\n\n"""
 
 GRAPH_MSG = """
 Sorry, my creators haven't completed me yet 🫣, but instead I can send you an image of a pretty cat 🤗

@@ -4,6 +4,9 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from numpy import ndarray
+
+from tensorflow_addons.metrics import F1Score
+
 from keras.models import load_model
 from keras.preprocessing.text import tokenizer_from_json, Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -75,11 +78,11 @@ def initialize_models_and_tokenizers():
     model_path_unif = Path().cwd() / "utils" / "models"
     tokenizer_path_unif = Path().cwd() / "utils" / "tokenizers"
 
-    comp_model = load_model(model_path_unif / "comp_model.keras")
-    ind_model = load_model(model_path_unif / "ind_model.keras")
-    glob_moex_model = load_model(model_path_unif / "glob_moex_model.keras")
-    glob_rvi_model = load_model(model_path_unif / "glob_rvi_model.keras")
-    glob_rubusd_model = load_model(model_path_unif / "glob_rubusd_model.keras")
+    comp_model = load_model(model_path_unif / "comp_model.h5")
+    ind_model = load_model(model_path_unif / "ind_model.h5")
+    glob_moex_model = load_model(model_path_unif / "glob_moex_model.h5")
+    glob_rvi_model = load_model(model_path_unif / "glob_rvi_model.h5")
+    glob_rubusd_model = load_model(model_path_unif / "glob_rubusd_model.h5")
 
     comp_tokenizer = read_json_tokenizer(tokenizer_path_unif / "comp_tokenizer.json")
     ind_tokenizer = read_json_tokenizer(tokenizer_path_unif / "ind_tokenizer.json")
@@ -108,8 +111,6 @@ def tokenize_and_pad_seq_text(text: str, tokenizer: Tokenizer):
     """
     seq_text = tokenizer.texts_to_sequences([text])
     seq_text = pad_sequences(seq_text, maxlen=MAXLEN)
-
-    print(type(seq_text))
 
     return seq_text
 

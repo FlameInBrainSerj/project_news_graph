@@ -8,7 +8,8 @@ router = Router()
 
 @router.callback_query(F.data == "show_feedback")
 async def show_feedback(callback: CallbackQuery):
-    """Sends reviews as a message.
+    """
+    Sends reviews as a message.
 
     :param callback: average of scores, all reviews
     :type callback: CallbackQuery

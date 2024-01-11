@@ -12,6 +12,12 @@ CAT_LINK = "https://cataas.com/cat"
 
 @router.callback_query(F.data == "display_graph")
 async def msg_display_graph(callback: CallbackQuery):
+    """
+    Display message about the graph.
+
+    :param callback: text of the message about the graph
+    :type callback: CallbackQuery
+    """
     await callback.answer(cache_time=1)
     await callback.message.answer(
         GRAPH_MSG.format(link=hide_link(CAT_LINK)),

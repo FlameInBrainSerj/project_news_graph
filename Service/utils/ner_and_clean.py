@@ -23,14 +23,30 @@ del_spaces = re.compile("\s{2,}")
 clean_text = re.compile("[^а-яa-z\s]")
 stop_words = stopwords.words("russian") + additional_stopwords
 
-segmenter = Segmenter()
-morph_vocab = MorphVocab()
-emb = NewsEmbedding()
-morph_tagger = NewsMorphTagger(emb)
-ner_tagger = NewsNERTagger(emb)
+
+def initialize_natasha():
+    """
+    Initialize natasha for NER.
+    """
+    global segmenter, morph_vocab, emb, morph_tagger, ner_tagger
+
+    segmenter = Segmenter()
+    morph_vocab = MorphVocab()
+    emb = NewsEmbedding()
+    morph_tagger = NewsMorphTagger(emb)
+    ner_tagger = NewsNERTagger(emb)
 
 
-def clear_text(text):
+def clear_text(text: str):
+    """
+    Clear text from mess.
+
+    :param text: text which will be cleared
+    :type text: str
+
+    :rtype: str
+    :return text: cleared text
+    """
     text = del_n.sub(" ", str(text).lower())
     text = del_tags.sub("", text)
     text = del_brackets.sub("", text)
@@ -38,7 +54,16 @@ def clear_text(text):
     return del_spaces.sub(" ", res_text)
 
 
-def del_stopwords(text):
+def del_stopwords(text: str):
+    """
+    Delete stopwords.
+
+    :param text: text where stopwords will be deleted
+    :type text: str
+
+    :rtype: str
+    :return text: text without stopwords
+    """
     clean_tokens = tuple(
         map(lambda x: x if x not in stop_words else "", word_tokenize(text))
     )
@@ -46,7 +71,16 @@ def del_stopwords(text):
     return res_text
 
 
-def lemmatize(text):
+def lemmatize(text: str):
+    """
+    Lemmatize the text.
+
+    :param text: text which will be lemmatized
+    :type text: str
+
+    :rtype: str
+    :return text: lemmatized text
+    """
     text = Doc(text)
     text.segment(segmenter)
     text.tag_morph(morph_tagger)
@@ -58,7 +92,18 @@ def lemmatize(text):
     return " ".join([token.lemma for token in text.tokens])
 
 
-def ner_and_clear_text(text):
+def ner_and_clear_text(text: str):
+    """
+    Get the cleared lemmatized text without stopword and get its level.
+
+    :param text: raw text of the news
+    :type text: str
+
+    :rtype: int
+    :return level: level
+    :rtype: str
+    :return text: lemmatized text
+    """
     text = clear_text(text)
     text = del_stopwords(text)
     text = lemmatize(text)

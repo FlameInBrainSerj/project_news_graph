@@ -62,7 +62,7 @@ async def read_feedback_from_db() -> str:
     Also calculates average score.
 
     :rtype: str
-    :return text: Average and users' reviews
+    :return text: average and users' reviews
     """
     cur.execute("""SELECT AVG(score)::numeric(10,2)  FROM reviews;""")
     average = "Average score: " + str(cur.fetchone()[0]) + "\n\n"

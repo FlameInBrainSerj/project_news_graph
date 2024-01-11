@@ -4,7 +4,8 @@ from aiogram import Bot, Dispatcher
 from config_reader import config
 
 from utils.database import sql_start
-from functionality import (
+from utils.ner_and_clean import initialize_natasha
+from handlers import (
     bot_start,
     bot_info,
     bot_graph,
@@ -13,14 +14,20 @@ from functionality import (
     bot_display_ticker,
 )
 
-from functionality.model import bot_model_main
+from handlers.model import bot_model_main
 
 logging.basicConfig(level=logging.INFO)
 
 
 async def main():
-    """Main bot function."""
+    """
+    Main bot function.
+    """
+    # Initialize natasha for NER
+    initialize_natasha()
+    # Initialize models and tokenizers
     bot_model_main.initialize_models_and_tokenizers()
+    # Create connection to db
     sql_start()
 
     bot = Bot(token=config.bot_token.get_secret_value())

@@ -1,11 +1,17 @@
-from aiogram import Router, F
-from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from aiogram import Router
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 router = Router()
 
 
-def model_btns() -> ReplyKeyboardMarkup:
+def model_btns() -> InlineKeyboardMarkup:
+    """
+    Inline buttons for the models prediction.
+
+    :rtype: ReplyKeyboardMarkup
+    :return kb: keyboard markup
+    """
     kb = InlineKeyboardBuilder()
 
     kb.row(

@@ -14,20 +14,21 @@ router = Router()
 
 class Tick(StatesGroup):
     """
-    Class for state of operation.
+    Class for the state of operation.
     """
 
     choosing_ticker = State()
 
 
 async def get_ticket_data(ticker: str) -> str:
-    """Requests last available hour candle of selected ticker.
+    """
+    Requests last available hour candle of selected ticker.
 
     :param ticker: textual input for ticker to match tickers from one of the companies, present in Moscow Exchange Broad Market Index
     :type ticker: str
 
     :rtype (str), str
-    :return text: formated candlestick of last trade hour of selected ticker
+    :return text: formatted candlestick of last trade hour of selected ticker
     """
     date = datetime.datetime.today() - datetime.timedelta(days=1)
 
@@ -39,7 +40,8 @@ async def get_ticket_data(ticker: str) -> str:
 
 @router.callback_query(F.data == "display_ticker")
 async def msg_get_ticket(callback: CallbackQuery, state: FSMContext):
-    """Asks user to select ticker. Changes status to ticker selection.
+    """
+    Asks user to select ticker. Changes status to ticker selection.
 
     :param callback: asks to select ticker
     :type callback: CallbackQuery
@@ -55,32 +57,35 @@ async def msg_get_ticket(callback: CallbackQuery, state: FSMContext):
 
 
 @router.message(Tick.choosing_ticker, F.text.upper().in_(TICKERS))
-async def feed_score(message: Message, state: FSMContext):
-    """Messages request result. Clears status.
+async def feed_score(msg: Message, state: FSMContext):
+    """
+    Messages request result. Clears status.
 
-    :param message: result of request
-    :type message: Message
+    :param msg: result of request
+    :type msg: Message
     :param state: state of operation, container for data, clears in the end
     :type state: FSMContext
     """
-    await state.update_data(chosen_ticker=message.text.upper())
+    await state.update_data(chosen_ticker=msg.text.upper())
     ticker = await state.get_data()
     ticker = ticker["chosen_ticker"]
 
     data = await get_ticket_data(ticker)
     text = TICKER_DESCRIPTION + f"Ticker: {ticker}\n\n" + data
 
-    await message.answer(text=text, reply_markup=ReplyKeyboardRemove())
+    await msg.answer(text=text, reply_markup=ReplyKeyboardRemove())
     await state.clear()
 
 
 @router.message(Tick.choosing_ticker)
-async def wrong_ticker(message: Message):
-    """Warns user of incorrect ticker.
+async def wrong_ticker(msg: Message):
+    """
+    Warns user of incorrect ticker.
 
-    :param message: warning
-    :type message: Message"""
-    await message.answer(
+    :param msg: warning
+    :type msg: Message
+    """
+    await msg.answer(
         text="Wrong ticker!\n"
         "Please select the ticker of the company represented in the broad market index of the Moscow Stock Exchange"
     )

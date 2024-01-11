@@ -34,7 +34,7 @@ This model was created with NLP methods and aimed to make predictions of news' i
 _*Levels:*_
 \- *Global*: MOEX index, RVI index, RUBUSD course
 \- *Indsutry*: industrial indicies \(i\.e\. MOEXOG, MOEXEU, MOEXTL, etc\.\)
-\- *Company*: companiпринes' share price according to ticker \(i\.e\. VKCO, SBER, YNDX, etc\.\)
+\- *Company*: companies' share price according to ticker \(i\.e\. VKCO, SBER, YNDX, etc\.\)
 
 _*Model's output:*_ label of influence on financial instrument \(Negative, Neytral, Positive\)
 

@@ -26,7 +26,8 @@ class Feedback(StatesGroup):
 
 
 def get_review_score() -> ReplyKeyboardMarkup:
-    """Creates keyboard with digits for user review.
+    """
+    Creates keyboard with digits for user review.
 
     :rtype: ReplyKeyboardMarkup
     :return: kb.as_markup: keyboard
@@ -40,7 +41,8 @@ def get_review_score() -> ReplyKeyboardMarkup:
 
 @router.callback_query(F.data == "leave_feedback")
 async def write_review(callback: CallbackQuery, state: FSMContext):
-    """Offers user to select digital score.
+    """
+    Offers user to select digital score.
 
     :param callback: offer to select digit
     :type callback: CallbackQuery
@@ -56,15 +58,16 @@ async def write_review(callback: CallbackQuery, state: FSMContext):
 
 
 @router.message(Feedback.scoring, F.text.in_(available_scores))
-async def feed_score(message: Message, state: FSMContext):
-    """Recieves score. Thanks for score. Changes status to giving feedback.
+async def feed_score(msg: Message, state: FSMContext):
+    """
+    Recieves score. Thanks for score. Changes status to giving feedback.
 
-    :param messsage: thanks for score
-    :type message: Message
+    :param msg: thanks for score
+    :type msg: Message
     :param state: current state of operation, changes to giving feedback
     :type state: FSMContext"""
-    await state.update_data(chosen_score=message.text.lower())
-    await message.answer(
+    await state.update_data(chosen_score=msg.text.lower())
+    await msg.answer(
         text="Thank you for your assessment. Please also leave a review.",
         reply_markup=ReplyKeyboardRemove(),
     )
@@ -72,13 +75,14 @@ async def feed_score(message: Message, state: FSMContext):
 
 
 @router.message(Feedback.scoring)
-async def incorrect_score(message: Message):
-    """Warnes user of incorrect score.
-
-    :param message: warning
-    :type message: Message
+async def incorrect_score(msg: Message):
     """
-    await message.answer(
+    Warnes user of incorrect score.
+
+    :param msg: warning
+    :type msg: Message
+    """
+    await msg.answer(
         text="Incorrect rating.\n\n"
         "Please select one of the digits from the list below:",
         reply_markup=get_review_score(),
@@ -86,33 +90,35 @@ async def incorrect_score(message: Message):
 
 
 @router.message(Feedback.giving_feedback, F.text.lower().len() <= 1000)
-async def recieve_feedback(message: Message, state: FSMContext):
-    """Takes feedback and thanks for it. Clears state of operation.
+async def receive_feedback(msg: Message, state: FSMContext):
+    """
+    Takes feedback and thanks for it. Clears state of operation.
 
-    :param message: thanks for feedback
-    :type message: Message
+    :param msg: thanks for feedback
+    :type msg: Message
     :param state: state of giving feedback, clears after sending data to database
     :type state: FSMContext
     """
-    await state.update_data(given_feedback=message.text.lower())
-    await message.answer(
+    await state.update_data(given_feedback=msg.text.lower())
+    await msg.answer(
         text="Thank you for your feedback, it is very valuable to us!\n\n"
         "P.S. If you have already given us a feedback earlier, only first feedback will be saved"
     )
     data = await state.get_data()
     await add_feedback_to_db(
-        message.from_user.id, int(data["chosen_score"]), data["given_feedback"]
+        msg.from_user.id, int(data["chosen_score"]), data["given_feedback"]
     )
     await state.clear()
 
 
 @router.message(Feedback.giving_feedback)
-async def incorrect_feedback(message: Message):
-    """Gives user warning of too big input.
-
-    :param message: message of warning
-    :type message: Message
+async def incorrect_feedback(msg: Message):
     """
-    await message.answer(
+    Gives user warning of too big input.
+
+    :param msg: message of warning
+    :type msg: Message
+    """
+    await msg.answer(
         text="Your message is too big. Please try to limit yourself to 1000 characters."
     )

@@ -1,14 +1,11 @@
 from selenium import webdriver
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 from utils.custom_exceptions import ParseError
 
 websites_xpath = {
-    "smartlab": "//div[@id='content']//div//div[@class='content']",
+    "smart-lab": "//div[@id='content']//div//div[@class='content']",
     "interfax": "//article[@itemprop='articleBody']",
     "kommersant": "//div[@class='doc__body']/div[2]",
     "ria": "//div[@class='layout-article__main-over']/div[1]/div[3]",
@@ -16,6 +13,12 @@ websites_xpath = {
 
 
 def initialize_webdriver_options():
+    """
+    Initialize webdriver options for parsing.
+
+    :rtype: Options
+    :return options: options for webdriver
+    """
     options = Options()
 
     options.page_load_strategy = "eager"
@@ -41,14 +44,26 @@ webdriver_options = initialize_webdriver_options()
 
 
 def parse_page(url: str, site: str, webdriver_options: Options = webdriver_options):
+    """
+    Parse news' page.
+
+    :param url: url of the news
+    :type url: str
+    :param site: portal where news is published
+    :type site: str
+    :param webdriver_options: options for webdriver
+    :type webdriver_options: Options
+
+    :rtype: str
+    :return body: body of the news
+    """
     try:
         driver = webdriver.Chrome(options=webdriver_options)
         driver.get(url)
         body = driver.find_element(By.XPATH, websites_xpath[site]).text
-
         return body
     except:
-        raise ParseError("The page was not parsed")
+        raise ParseError("Sorry, the page was not parsed :(, please, try another link")
     finally:
         driver.close()
         driver.quit()

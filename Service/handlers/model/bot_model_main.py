@@ -3,14 +3,15 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ParseMode
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+from numpy import ndarray
 from keras.models import load_model
 from keras.preprocessing.text import tokenizer_from_json, Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 import json
 from pathlib import Path
 
-from functionality.model.bot_model_buttons import model_btns
-from functionality.model.scrapers import websites_xpath, parse_page
+from handlers.model.bot_model_buttons import model_btns
+from handlers.model.scrapers import websites_xpath, parse_page
 
 from utils.ner_and_clean import ner_and_clear_text
 from utils.custom_exceptions import ParseError
@@ -28,7 +29,7 @@ router = Router()
 
 class ModelInference(StatesGroup):
     """
-    Class for state changes and also container for data.
+    Class for the state of model inference.
     """
 
     pass_link = State()
@@ -37,6 +38,12 @@ class ModelInference(StatesGroup):
 
 @router.callback_query(F.data == "make_prediction")
 async def msg_model(callback: CallbackQuery):
+    """
+    Send message for the user about the model prediction and display model's buttons.
+
+    :param callback: warning
+    :type callback: CallbackQuery
+    """
     await callback.answer(cache_time=1)
     await callback.message.answer(
         f"What would you like to do with the model?", reply_markup=model_btns()
@@ -44,12 +51,24 @@ async def msg_model(callback: CallbackQuery):
 
 
 def read_json_tokenizer(path: Path):
+    """
+    Read tokenizer in json format
+
+    :param path: path to tokenizer in json
+    :type path: Path
+
+    :rtype: Tokenizer
+    :return tokenizer: tokenizer for the model
+    """
     with open(path, "r") as f:
         data = json.load(f)
         return tokenizer_from_json(data)
 
 
 def initialize_models_and_tokenizers():
+    """
+    Initialize models and tokenizers for them.
+    """
     global comp_model, ind_model, glob_moex_model, glob_rvi_model, glob_rubusd_model
     global comp_tokenizer, ind_tokenizer, glob_moex_tokenizer, glob_rvi_tokenizer, glob_rubusd_tokenizer
 
@@ -76,13 +95,35 @@ def initialize_models_and_tokenizers():
 
 
 def tokenize_and_pad_seq_text(text: str, tokenizer: Tokenizer):
+    """
+    Tokenize text and pad tokenized text according to MAXLEN
+
+    :param text: text for tokenization
+    :type text: str
+    :param tokenizer: tokenizer for the model
+    :type tokenizer: Tokenizer
+
+    :rtype: ndarray
+    :return seq_text: tokenized and padded text
+    """
     seq_text = tokenizer.texts_to_sequences([text])
     seq_text = pad_sequences(seq_text, maxlen=MAXLEN)
+
+    print(type(seq_text))
 
     return seq_text
 
 
 def prediction_raw_text(text: str):
+    """
+    Make predictions of news' influence on financial instruments in accordance with certain levels with beautiful message.
+
+    :param text: text of the news
+    :type text: str
+
+    :rtype: str
+    :return message: message of the prediciton result
+    """
     level, text = ner_and_clear_text(text)
 
     # Global_MOEX
@@ -107,6 +148,7 @@ def prediction_raw_text(text: str):
         seq_text_ind = tokenize_and_pad_seq_text(text, ind_tokenizer)
         pred_ind = ind_model.predict(seq_text_ind)
         pred_ind_label = MODEL_OUTPUT[pred_ind[0].argmax()]
+
         return PREDICTION_LEVEL_3.format(
             comp_share_price_label=pred_comp_label,
             ind_index_label=pred_ind_label,
@@ -124,12 +166,26 @@ def prediction_raw_text(text: str):
 
 @router.callback_query(F.data == "model_info")
 async def msg_model_info(callback: CallbackQuery):
+    """
+    Display information about the model.
+
+    :param callback: display model info
+    :type callback: CallbackQuery
+    """
     await callback.answer(cache_time=1)
     await callback.message.answer(MODEL_INFO, parse_mode=ParseMode.MARKDOWN_V2)
 
 
 @router.callback_query(F.data == "insert_link")
 async def msg_insert_link(callback: CallbackQuery, state: FSMContext):
+    """
+    Ask to insert the link. Changes state to pass_link.
+
+    :param callback: asks to insert the link
+    :type callback: CallbackQuery
+    :param state: state of operation, changes to pass_link
+    :type state: FSMContext
+    """
     await callback.answer(cache_time=1)
     await callback.message.answer(
         INSERT_LINK_MSG.format(websites=[*websites_xpath.keys()]),
@@ -140,35 +196,47 @@ async def msg_insert_link(callback: CallbackQuery, state: FSMContext):
 
 @router.message(ModelInference.pass_link)
 async def make_prediction_link(msg: Message, state: FSMContext):
+    """
+    Parse news' webpage. Return the model prediction.
+
+    :param msg: result of model's prediction
+    :type msg: Message
+    :param state: state of operation, clears in the end
+    :type state: FSMContext
+    """
     url = msg.text.lower()
     text = False
 
     try:
-        if "smart-lab" in url:
-            text = parse_page(url, "smartlab")
-        elif "kommersant" in url:
-            text = parse_page(url, "kommersant")
-        elif "interfax" in url:
-            text = parse_page(url, "interfax")
-        elif "ria" in url:
-            text = parse_page(url, "ria")
-        else:
-            await msg.answer("Sorry, the link you passed is invalid")
+        for site in websites_xpath.keys():
+            if site in url:
+                text = parse_page(url, site)
 
         if text:
             await msg.answer(
                 prediction_raw_text(text),
                 parse_mode=ParseMode.MARKDOWN_V2,
             )
+        else:
+            await msg.answer("Sorry, the link you passed is invalid")
 
     except ParseError as e:
-        await msg.answer(e)
+        await msg.answer(e.message)
+
     finally:
         await state.clear()
 
 
 @router.callback_query(F.data == "insert_text")
 async def msg_insert_text(callback: CallbackQuery, state: FSMContext):
+    """
+    Ask to insert the text. Changes state to pass_text.
+
+    :param callback: asks to insert the text
+    :type callback: CallbackQuery
+    :param state: state of operation, changes to pass_text
+    :type state: FSMContext
+    """
     await callback.answer(cache_time=1)
     await callback.message.answer(
         INSERT_TEXT_MSG,
@@ -179,9 +247,16 @@ async def msg_insert_text(callback: CallbackQuery, state: FSMContext):
 
 @router.message(ModelInference.pass_text)
 async def make_prediction_text(msg: Message, state: FSMContext):
-    text = msg.text[5:]
+    """
+    Return the model prediction.
+
+    :param msg: result of model's prediction
+    :type msg: Message
+    :param state: state of operation, clears in the end
+    :type state: FSMContext
+    """
     await msg.answer(
-        prediction_raw_text(text),
+        prediction_raw_text(msg.text.lower()),
         parse_mode=ParseMode.MARKDOWN_V2,
     )
     await state.clear()

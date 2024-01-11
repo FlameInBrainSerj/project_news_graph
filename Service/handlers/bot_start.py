@@ -1,12 +1,18 @@
 from aiogram import Router, F
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton, Message
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 router = Router()
 
 
-def main_btns() -> ReplyKeyboardMarkup:
+def main_btns() -> InlineKeyboardMarkup:
+    """
+    Inline buttons for the bot start.
+
+    :rtype: InlineKeyboardMarkup
+    :return kb: keyboard markup
+    """
     kb = InlineKeyboardBuilder()
 
     kb.row(
@@ -46,6 +52,12 @@ def main_btns() -> ReplyKeyboardMarkup:
 
 @router.message(Command("start"))
 async def cmd_start(msg: Message):
+    """
+    Greetings and display main buttons.
+
+    :param msg: message of the greetings
+    :type msg: Message
+    """
     await msg.answer(
         f"Hello, {msg.from_user.full_name}, let's start!", reply_markup=main_btns()
     )

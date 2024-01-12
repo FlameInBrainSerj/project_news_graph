@@ -8,6 +8,7 @@ conn = psycopg2.connect(
     database=config.database.get_secret_value(),
     user=config.user.get_secret_value(),
     password=config.password.get_secret_value(),
+    sslmode="require",
 )
 cur = conn.cursor()
 

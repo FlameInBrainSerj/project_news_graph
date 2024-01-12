@@ -1,8 +1,8 @@
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher
-from config_reader import config
 
+from config_reader import config
 from utils.database import sql_start
 from utils.ner_and_clean import initialize_natasha
 from handlers import (
@@ -15,8 +15,6 @@ from handlers import (
 )
 
 from handlers.model import bot_model_main
-
-logging.basicConfig(level=logging.INFO)
 
 
 async def main():
@@ -31,6 +29,7 @@ async def main():
     sql_start()
 
     bot = Bot(token=config.bot_token.get_secret_value())
+
     dp = Dispatcher()
 
     dp.include_routers(
@@ -44,8 +43,9 @@ async def main():
     )
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot, host="0.0.0.0", port=8080)
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     asyncio.run(main())

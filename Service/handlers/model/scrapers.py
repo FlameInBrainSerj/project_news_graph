@@ -43,7 +43,24 @@ def initialize_webdriver_options():
 webdriver_options = initialize_webdriver_options()
 
 
-def parse_page(url: str, site: str, webdriver_options: Options = webdriver_options):
+def initialize_webdriver(webdriver_options: Options = webdriver_options):
+    """
+    Initialize webdriver.
+
+    :param webdriver_options: options for webdriver
+    :type webdriver_options: Options
+    """
+    global driver
+    driver = webdriver.Chrome(options=webdriver_options)
+
+
+initialize_webdriver()
+
+
+def parse_page(
+    url: str,
+    site: str,
+):
     """
     Parse news' page.
 
@@ -51,19 +68,14 @@ def parse_page(url: str, site: str, webdriver_options: Options = webdriver_optio
     :type url: str
     :param site: portal where news is published
     :type site: str
-    :param webdriver_options: options for webdriver
-    :type webdriver_options: Options
+
 
     :rtype: str
     :return body: body of the news
     """
     try:
-        driver = webdriver.Chrome(options=webdriver_options)
         driver.get(url)
         body = driver.find_element(By.XPATH, websites_xpath[site]).text
         return body
     except:
         raise ParseError("Sorry, the page was not parsed :(, please, try another link")
-    finally:
-        driver.close()
-        driver.quit()

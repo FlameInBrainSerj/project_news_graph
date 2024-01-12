@@ -44,7 +44,7 @@ async def main():
     )
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, host="0.0.0.0", port=8080)
 
 
 if __name__ == "__main__":

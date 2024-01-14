@@ -2,6 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
+import logging
+
 from utils.custom_exceptions import ParseError
 
 websites_xpath = {
@@ -77,5 +79,6 @@ def parse_page(
         driver.get(url)
         body = driver.find_element(By.XPATH, websites_xpath[site]).text
         return body
-    except:
+    except Exception as e:
+        logging.error(e)
         raise ParseError("Sorry, the page was not parsed :(, please, try another link")

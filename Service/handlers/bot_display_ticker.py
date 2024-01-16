@@ -31,19 +31,16 @@ async def get_ticket_data(ticker: str) -> str:
     :rtype (str), str
     :return text: formatted candlestick of last trade hour of selected ticker
     """
-    # Required to display instruments on weekends correctly
     date = (datetime.datetime.now(pytz.timezone("Europe/Moscow"))).date()
-    weekday = date.weekday()
-    if weekday < 5:
-        date = date
-    elif weekday == 5:
-        date -= datetime.timedelta(days=1)
-    else:
-        date -= datetime.timedelta(days=2)
-
-    n = requests.get(COMPANIES_API_STRING.format(ticker, date)).json()
-    data = n["candles"]["data"][-1]
     text = "Open: {}\nClose: {}\nHigh: {}\nLow: {}\nValue: {}\nVolume: {}\nBegin: {} (GMT+3)\nEnd: {} (GMT+3)"
+    while True:
+        n = requests.get(COMPANIES_API_STRING.format(ticker, date)).json()
+        try:
+            data = n["candles"]["data"][-1]
+            break
+        except IndexError:
+            date -= datetime.timedelta(days=1)
+            continue
     return text.format(*data)
 
 

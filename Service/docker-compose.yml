@@ -1,0 +1,11 @@
+services:
+
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium-bot
+    ports:
+    - 4444:4444
+
+  bot:
+    build: .
+    container_name: tg-bot

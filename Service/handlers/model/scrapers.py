@@ -53,7 +53,7 @@ def initialize_webdriver(webdriver_options: Options = webdriver_options):
     :type webdriver_options: Options
     """
     global driver
-    driver = webdriver.Chrome(options=webdriver_options)
+    driver = webdriver.Remote("http://selenium:4444/wd/hub", options=webdriver_options)
 
 
 initialize_webdriver()

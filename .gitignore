@@ -1,5 +1,6 @@
 # Some local directories and files
 Disk/
+Service/reminder.txt
 *.csv
 
 # Byte-compiled / optimized / DLL files

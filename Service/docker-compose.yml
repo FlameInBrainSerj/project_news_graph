@@ -1,11 +1,46 @@
 services:
-
-  selenium:
-    image: selenium/standalone-chrome
-    container_name: selenium-bot
-    ports:
-    - 4444:4444
-
   bot:
     build: .
     container_name: tg-bot
+    restart: unless-stopped
+    depends_on:
+      - selenium
+      - db
+    networks:
+      - internet
+      - appnet
+
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    ports:
+      - 4444:4444
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  db:
+    image: postgres
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: 'your_user'
+      POSTGRES_PASSWORD: 'your_password'
+      POSTGRES_DB: 'your_db'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - appnet
+
+networks:
+  internet:
+    name: internet
+    driver: bridge
+  appnet:
+    name: appnet
+    driver: bridge
+
+volumes:
+  pgdata:

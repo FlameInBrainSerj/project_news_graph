@@ -2,29 +2,36 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
+    restart: unless-stopped
     ports:
       - 9443:9443
     volumes:
       - portainer_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
 
   bot:
     build: .
     container_name: tg-bot
     restart: unless-stopped
     depends_on:
-      - selenium
-      - db
+      selenium:
+        condition: service_healthy
+      db:
+        condition: service_healthy
     networks:
-      - internet
       - appnet
   selenium:
     image: selenium/standalone-chrome
     container_name: selenium
+    restart: unless-stopped
     ports:
       - 4444:4444
-    restart: unless-stopped
+    environment:
+      - SE_NODE_SESSION_TIMEOUT=100000000
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "https://www.google.com/"]
+      interval: 5s
+      retries: 3
     networks:
       - appnet
   db:
@@ -34,18 +41,19 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: 'your_user'
-      POSTGRES_PASSWORD: 'your_password'
-      POSTGRES_DB: 'your_db'
+      - POSTGRES_USER=your_user
+      - POSTGRES_PASSWORD=your_password
+      - POSTGRES_DB=your_database
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "sergey", "-d", "ratings"]
+      interval: 5s
+      retries: 5
     networks:
       - appnet
 
 networks:
-  internet:
-    name: internet
-    driver: bridge
   appnet:
     name: appnet
     driver: bridge

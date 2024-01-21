@@ -2,7 +2,7 @@
 
 
 **Curator:** Andrey Babynin (@maninoffice)     
-**List of team members:** Maxim Dumenkov (@maxodum), Sergey Krivosheev (@FlameInBrain) 
+**Team members:** Maxim Dumenkov (@maxodum), Sergey Krivosheev (@FlameInBrain) 
 
 **Project description:** Parsing news, analyzing them using NLP and GNN methods and creating services around the resulting models, namely: 
 * Creation of NLP models that evaluate the 'impact' of news on certain financial instruments 
@@ -15,7 +15,8 @@
         * Global level: MOEX index, RVI index, RUBUSD rate 
         * Local level: industry index (i.e. MOEXOG, MOEXEU, MOEXTL, etc.) 
         * Spot level: shares of companies according to ticket (i.e. VKCO, SBER, YNDX, etc.) 
-    - Output models: * Tags: '+' - positive 'influence', '0' - no 'influence', '-' - negative 'influence' 
+    - Output models: 
+        * Tags: '+' - positive 'influence', '0' - no 'influence', '-' - negative 'influence' 
 * Creating a graph of connections between financial market entities 
 * Using GNN methods for: **TBA** 
 * Creating a Telegram bot 

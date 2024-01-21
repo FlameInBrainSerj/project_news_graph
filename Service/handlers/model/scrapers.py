@@ -7,10 +7,19 @@ import logging
 from utils.custom_exceptions import ParseError
 
 websites_xpath = {
+    # Stable
     "smart-lab": "//div[@id='content']//div//div[@class='content']",
     "interfax": "//article[@itemprop='articleBody']",
     "kommersant": "//div[@class='doc__body']/div[2]",
-    "ria": "//div[@class='layout-article__main-over']/div[1]/div[3]",
+    "ria": "//div[@class='layout-article__main-over']/div[1]/div[3]/div[@data-type='text' or @data-type='quote']",
+    # OK
+    "rbc": "//div[@itemprop='articleBody']/p",
+    "lenta": "//main/div[2]/div[3]/div[1]/div[2]/div[1]",
+    "gazeta": "//div[@itemprop='articleBody']/p",
+    "tass": "//article",
+    "iz.ru": "//div[@itemprop='articleBody']/div/p",
+    # Unstable
+    "finam": "/html/body/div[1]/div/div[2]/div/div[5]/div[1]/div[3]/div[2]/p",
 }
 
 
@@ -77,7 +86,16 @@ def parse_page(
     """
     try:
         driver.get(url)
-        body = driver.find_element(By.XPATH, websites_xpath[site]).text
+        body = " ".join(
+            [el.text for el in driver.find_elements(By.XPATH, websites_xpath[site])]
+        )
+
+        # Raise error when page was not parsed because it has not fully loaded
+        if len(body) == 0:
+            raise ParseError(
+                "Sorry, the page was not parsed :(, please, try insert the same link again or try insert the text of the news using corresponding buttons"
+            )
+
         return body
     except Exception as e:
         logging.error(e)

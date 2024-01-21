@@ -9,7 +9,7 @@ from config_reader import config
 #     user=config.user.get_secret_value(),
 #     password=config.password.get_secret_value(),
 # )
-conn = psycopg2.connect(config.external_uri.get_secret_value(), sslmode="require")
+conn = psycopg2.connect(config.external_uri.get_secret_value())
 cur = conn.cursor()
 
 

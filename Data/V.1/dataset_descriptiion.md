@@ -1,28 +1,25 @@
 # Dataset description
 
-Датасет сформирован на основе новостей, связанных с финансовым сектором экономики.
+Dataset was formed basing on the news connected to the financial sector of economy
 
-Начальная дата: 01.01.2023
-Конечная дата: 31.10.2023
+Start date: 01.01.2023
+End date: 31.10.2023
 
-Новостные порталы, откуда были взяты новости/статьи: 
+News websites where the news were taken: 
 
-| Portal | Number of obs. |
+| Website | Number of obs. |
 |:------:|:------:|
 |[Smart Lab](https://smart-lab.ru/news/)|12472|
 |[Kommersant](https://www.kommersant.ru/finance?from=burger)|2480|
-|[РИА](https://ria.ru/economy/)|10138|
-|[Интерфакс](https://www.interfax.ru/business/)|14685|
-
-Ссылка на хранилище данных: [Данные](https://disk.yandex.ru/d/snDpPgzEwMECiA)
+|[Ria](https://ria.ru/economy/)|10138|
+|[Interfax](https://www.interfax.ru/business/)|14685|
 
 | Column | Description |
 |:------:|------|
-| website | Новостной портал, где была взята новость |
-| section | Секция на новостном портале, из которой была взята новость |
-| url | url новости |
-| header | Заголовок новости |
-| body | Текст новости |
-| date | Дата публикации новости |
-| key_words | Ключевые слова, указанные в новости |
-| date | Дата новости |
+| website | News' website |
+| section | Section, where the news were taken |
+| url | Url of the news |
+| header | Header of the news |
+| body | Text of the news |
+| date | Publication date |
+| key_words | Key words, specified on the news' page |

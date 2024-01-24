@@ -2,14 +2,15 @@ import psycopg2
 
 from config_reader import config
 
-# conn = psycopg2.connect(
-#     host=config.host.get_secret_value(),
-#     port=config.port.get_secret_value(),
-#     database=config.database.get_secret_value(),
-#     user=config.user.get_secret_value(),
-#     password=config.password.get_secret_value(),
-# )
-conn = psycopg2.connect(config.external_uri.get_secret_value())
+host = config.host.get_secret_value()
+port = config.port.get_secret_value()
+database = config.database.get_secret_value()
+user = config.user.get_secret_value()
+password = config.password.get_secret_value()
+
+conn = psycopg2.connect(
+    dbname=database, user=user, password=password, host=host, port=port
+)
 cur = conn.cursor()
 
 

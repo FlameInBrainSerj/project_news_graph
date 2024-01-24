@@ -39,15 +39,17 @@ services:
     container_name: postgres
     restart: unless-stopped
     ports:
-      - 5432:5432
+      - ${PORT}:5432
+    env_file:
+      - ./.env
     environment:
-      - POSTGRES_USER=your_user
-      - POSTGRES_PASSWORD=your_password
-      - POSTGRES_DB=your_database
+      - POSTGRES_USER=${USER}
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_DB=${DATABASE}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata_bot:/var/lib/postgresql/data/
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "sergey", "-d", "ratings"]
+      test: ["CMD", "pg_isready", "-U", "$USER", "-d", "$DATABASE"]
       interval: 5s
       retries: 5
     networks:
@@ -59,5 +61,5 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  pgdata_bot:
   portainer_data:

@@ -14,7 +14,6 @@ class Settings(BaseSettings):
     host: SecretStr
     port: SecretStr
     database: SecretStr
-    external_uri: SecretStr
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

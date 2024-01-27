@@ -2,17 +2,18 @@
 
 Dataset was formed basing on the news connected to the financial sector of economy
 
-Start date: 01.01.2023  
-End date: 31.10.2023
+Start date: 01.01.2019  
+End date: 31.12.2023
 
 News websites where the news were taken: 
 
 | Website | Number of obs. |
 |:------:|:------:|
-|[Smart Lab](https://smart-lab.ru/news/)|12472|
-|[Kommersant](https://www.kommersant.ru/finance?from=burger)|2480|
-|[Ria](https://ria.ru/economy/)|10138|
-|[Interfax](https://www.interfax.ru/business/)|14685|
+|[Smart Lab](https://smart-lab.ru/news/)|66296|
+|[Kommersant](https://www.kommersant.ru/finance?from=burger)|15118|
+|[Ria](https://ria.ru/economy/)|81729|
+|[Interfax](https://www.interfax.ru/business/)|63832|
+|**Total**|226975|
 
 | Column | Description |
 |:------:|------|

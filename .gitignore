@@ -1,5 +1,5 @@
 # Some local directories and files
-Disk/
+Data/
 Service/reminder.txt
 *.csv
 *.parquet
@@ -166,3 +166,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+/Data

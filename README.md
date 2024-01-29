@@ -31,7 +31,7 @@
         * Ria 
         * Interfax 
     - Data store: 
-        * Postgresql 
+        * DVC (GDrive)
 * List of tasks at the first stage (exploratory data analysis and primary data analysis): 
     - Clean data from “empty” news (for example, there are news where there are only pictures or only a link to an external news) 
     - Get rid of completely duplicate news 

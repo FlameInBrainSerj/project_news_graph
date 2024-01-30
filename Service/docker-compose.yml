@@ -1,10 +1,11 @@
-services:
+services:  
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: unless-stopped
     ports:
-      - 9443:9443
+      - 8000:8000
+      - 9000:9000
     volumes:
       - portainer_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -20,6 +21,7 @@ services:
         condition: service_healthy
     networks:
       - appnet
+
   selenium:
     image: selenium/standalone-chrome
     container_name: selenium
@@ -34,6 +36,7 @@ services:
       retries: 3
     networks:
       - appnet
+      
   db:
     image: postgres
     container_name: postgres

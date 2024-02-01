@@ -3,4 +3,4 @@ outs:
   size: 1588568
   nfiles: 5
   hash: md5
-  path: tokenizers
+  path: vocabs

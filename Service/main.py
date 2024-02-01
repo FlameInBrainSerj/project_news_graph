@@ -15,6 +15,7 @@ from handlers import (
 )
 
 from handlers.model import bot_model_main
+from handlers.model.bot_model_main import LSTMClassifier
 
 
 async def main():
@@ -24,7 +25,7 @@ async def main():
     # Initialize natasha for NER
     initialize_natasha()
     # Initialize models and tokenizers
-    bot_model_main.initialize_models_and_tokenizers()
+    bot_model_main.initialize_models_and_vocabs()
     # Create connection to db
     sql_start()
 

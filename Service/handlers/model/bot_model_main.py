@@ -5,11 +5,11 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from numpy import ndarray
 
-from tensorflow_addons.metrics import F1Score
+import torch
+from torch import nn
+from torch.utils.data import DataLoader
+from torchtext.vocab import Vocab
 
-from keras.models import load_model
-from keras.preprocessing.text import tokenizer_from_json, Tokenizer
-from keras.preprocessing.sequence import pad_sequences
 import json
 from pathlib import Path
 
@@ -27,7 +27,39 @@ from utils.text_messages import (
     PREDICTION_LEVEL_3,
 )
 
+device = torch.device("cpu")
 router = Router()
+
+
+class LSTMClassifier(nn.Module):
+    def __init__(self, emb_dim, hid_dim, n_layers, vocab):
+        super(LSTMClassifier, self).__init__()
+
+        self.vocab = vocab
+        self.emb_dim = emb_dim
+        self.hid_dim = hid_dim
+        self.n_layers = n_layers
+
+        self.embedding_layer = nn.Embedding(
+            num_embeddings=len(self.vocab), embedding_dim=self.emb_dim
+        )
+
+        self.lstm = nn.LSTM(
+            input_size=self.emb_dim,
+            hidden_size=self.hid_dim,
+            num_layers=self.n_layers,
+            batch_first=True,
+        )
+
+        self.linear = nn.Linear(self.hid_dim, 3)
+
+    def forward(self, X_batch):
+        embeddings = self.embedding_layer(X_batch)
+        hidden, carry = torch.zeros(
+            self.n_layers, len(X_batch), self.hid_dim, device=device
+        ), torch.zeros(self.n_layers, len(X_batch), self.hid_dim, device=device)
+        output, (hidden, carry) = self.lstm(embeddings, (hidden, carry))
+        return self.linear(output[:, -1])
 
 
 class ModelInference(StatesGroup):
@@ -53,66 +85,55 @@ async def msg_model(callback: CallbackQuery):
     )
 
 
-def read_json_tokenizer(path: Path):
-    """
-    Read tokenizer in json format
-
-    :param path: path to tokenizer in json
-    :type path: Path
-
-    :rtype: Tokenizer
-    :return tokenizer: tokenizer for the model
-    """
-    with open(path, "r") as f:
-        data = json.load(f)
-        return tokenizer_from_json(data)
-
-
-def initialize_models_and_tokenizers():
+def initialize_models_and_vocabs():
     """
     Initialize models and tokenizers for them.
     """
     global comp_model, ind_model, glob_moex_model, glob_rvi_model, glob_rubusd_model
-    global comp_tokenizer, ind_tokenizer, glob_moex_tokenizer, glob_rvi_tokenizer, glob_rubusd_tokenizer
+    global comp_vocab, ind_vocab, glob_moex_vocab, glob_rvi_vocab, glob_rubusd_vocab
 
     model_path_unif = Path().cwd() / "utils" / "models"
-    tokenizer_path_unif = Path().cwd() / "utils" / "tokenizers"
+    vocab_path_unif = Path().cwd() / "utils" / "tokenizers"
 
-    comp_model = load_model(model_path_unif / "comp_model.h5")
-    ind_model = load_model(model_path_unif / "ind_model.h5")
-    glob_moex_model = load_model(model_path_unif / "glob_moex_model.h5")
-    glob_rvi_model = load_model(model_path_unif / "glob_rvi_model.h5")
-    glob_rubusd_model = load_model(model_path_unif / "glob_rubusd_model.h5")
-
-    comp_tokenizer = read_json_tokenizer(tokenizer_path_unif / "comp_tokenizer.json")
-    ind_tokenizer = read_json_tokenizer(tokenizer_path_unif / "ind_tokenizer.json")
-    glob_moex_tokenizer = read_json_tokenizer(
-        tokenizer_path_unif / "glob_moex_tokenizer.json"
+    comp_model = torch.load(model_path_unif / "comp_model.h5", map_location=device)
+    ind_model = torch.load(model_path_unif / "ind_model.h5", map_location=device)
+    glob_moex_model = torch.load(
+        model_path_unif / "glob_moex_model.h5", map_location=device
     )
-    glob_rvi_tokenizer = read_json_tokenizer(
-        tokenizer_path_unif / "glob_rvi_tokenizer.json"
+    glob_rvi_model = torch.load(
+        model_path_unif / "glob_rvi_model.h5", map_location=device
     )
-    glob_rubusd_tokenizer = read_json_tokenizer(
-        tokenizer_path_unif / "glob_rubusd_tokenizer.json"
+    glob_rubusd_model = torch.load(
+        model_path_unif / "glob_rubusd_model.h5", map_location=device
     )
 
+    comp_vocab = torch.load(vocab_path_unif / "comp_vocab.pt")
+    ind_vocab = torch.load(vocab_path_unif / "ind_vocab.pt")
+    glob_moex_vocab = torch.load(vocab_path_unif / "glob_moex_vocab.pt")
+    glob_rvi_vocab = torch.load(vocab_path_unif / "glob_rvi_vocab.pt")
+    glob_rubusd_vocab = torch.load(vocab_path_unif / "glob_rubusd_vocab.pt")
 
-def tokenize_and_pad_seq_text(text: str, tokenizer: Tokenizer):
+
+def tokenize_and_pad_seq_text(text: str, vocab: Vocab):
     """
-    Tokenize text and pad tokenized text according to MAXLEN
+    Tokenize text and pad tokenized text according to MAXLEN.
 
     :param text: text for tokenization
     :type text: str
-    :param tokenizer: tokenizer for the model
-    :type tokenizer: Tokenizer
+    :param vocab: vocab for the model
+    :type vocab: Vocab
 
-    :rtype: ndarray
-    :return seq_text: tokenized and padded text
+    :rtype: torch.Tensor
+    :return torch.Tensor(text): tokenized and padded text
     """
-    seq_text = tokenizer.texts_to_sequences([text])
-    seq_text = pad_sequences(seq_text, maxlen=MAXLEN)
+    # Change words to indexes according to vocab
+    text = vocab(text.split(" "))
+    # Pad or truncate the sequence
+    text = [
+        text + ([0] * (MAXLEN - len(text))) if len(text) < MAXLEN else text[:MAXLEN]
+    ][0]
 
-    return seq_text
+    return torch.tensor(text, dtype=torch.int32).reshape(1, -1)
 
 
 def prediction_raw_text(text: str):
@@ -128,27 +149,27 @@ def prediction_raw_text(text: str):
     level, text = ner_and_clear_text(text)
 
     # Global_MOEX
-    seq_text_glob_moex = tokenize_and_pad_seq_text(text, glob_moex_tokenizer)
-    pred_glob_moex = glob_moex_model.predict(seq_text_glob_moex)
-    pred_glob_moex_label = MODEL_OUTPUT[pred_glob_moex[0].argmax()]
+    seq_text_glob_moex = tokenize_and_pad_seq_text(text, glob_moex_vocab)
+    pred_glob_moex = glob_moex_model(seq_text_glob_moex)
+    pred_glob_moex_label = MODEL_OUTPUT[pred_glob_moex.detach().numpy()[0].argmax()]
     # Global_RVI
-    seq_text_glob_rvi = tokenize_and_pad_seq_text(text, glob_rvi_tokenizer)
-    pred_glob_rvi = glob_rvi_model.predict(seq_text_glob_rvi)
-    pred_glob_rvi_label = MODEL_OUTPUT[pred_glob_rvi[0].argmax()]
+    seq_text_glob_rvi = tokenize_and_pad_seq_text(text, glob_rvi_vocab)
+    pred_glob_rvi = glob_rvi_model(seq_text_glob_rvi)
+    pred_glob_rvi_label = MODEL_OUTPUT[pred_glob_rvi.detach().numpy()[0].argmax()]
     # Global_RUBUSD
-    seq_text_glob_rubusd = tokenize_and_pad_seq_text(text, glob_rubusd_tokenizer)
-    pred_glob_rubusd = glob_rubusd_model.predict(seq_text_glob_rubusd)
-    pred_glob_rubusd_label = MODEL_OUTPUT[pred_glob_rubusd[0].argmax()]
+    seq_text_glob_rubusd = tokenize_and_pad_seq_text(text, glob_rubusd_vocab)
+    pred_glob_rubusd = glob_rubusd_model(seq_text_glob_rubusd)
+    pred_glob_rubusd_label = MODEL_OUTPUT[pred_glob_rubusd.detach().numpy()[0].argmax()]
 
     if level == 3:
         # Company
-        seq_text_comp = tokenize_and_pad_seq_text(text, comp_tokenizer)
-        pred_comp = comp_model.predict(seq_text_comp)
-        pred_comp_label = MODEL_OUTPUT[pred_comp[0].argmax()]
+        seq_text_comp = tokenize_and_pad_seq_text(text, comp_vocab)
+        pred_comp = comp_model(seq_text_comp)
+        pred_comp_label = MODEL_OUTPUT[pred_comp.detach().numpy()[0].argmax()]
         # Industry
-        seq_text_ind = tokenize_and_pad_seq_text(text, ind_tokenizer)
-        pred_ind = ind_model.predict(seq_text_ind)
-        pred_ind_label = MODEL_OUTPUT[pred_ind[0].argmax()]
+        seq_text_ind = tokenize_and_pad_seq_text(text, ind_vocab)
+        pred_ind = ind_model(seq_text_ind)
+        pred_ind_label = MODEL_OUTPUT[pred_ind.detach().numpy()[0].argmax()]
 
         return PREDICTION_LEVEL_3.format(
             comp_share_price_label=pred_comp_label,

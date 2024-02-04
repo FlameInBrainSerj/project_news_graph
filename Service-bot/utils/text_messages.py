@@ -18,7 +18,7 @@ completed can be found in the GitHub repository: [github repo](https://github.co
 """
 
 DISCLAIMER = """
-Service is still in the development, that is why:
+Service-bot is still in the development, that is why:
  \- Not all features are implemented yet
  \- Some bugs can arise
  \- Models are not finished yet and will be improved in the future

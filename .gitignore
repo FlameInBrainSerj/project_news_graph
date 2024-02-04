@@ -2,10 +2,10 @@
 Data/
 Modeling/artifacts/
 Modeling/tokenizers/
-Service/utils/models/
-Service/utils/tokenizers/
+Service-bot/utils/models/
+Service-bot/utils/tokenizers/
 
-Service/reminder.txt
+Service-bot/reminder.txt
 *.csv
 *.h5
 *.parquet
@@ -132,7 +132,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-Service/.env
+Service-bot/.env
 # .env
 .venv
 env/

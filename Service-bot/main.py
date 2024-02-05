@@ -1,24 +1,23 @@
-import logging
 import asyncio
-from aiogram import Bot, Dispatcher
+import logging
 
+from aiogram import Bot, Dispatcher
 from config_reader import config
-from utils.database import sql_start
-from utils.ner_and_clean import initialize_natasha
 from handlers import (
-    bot_start,
-    bot_info,
-    bot_graph,
-    bot_get_feedback,
     bot_display_feedback,
     bot_display_ticker,
+    bot_get_feedback,
+    bot_graph,
+    bot_info,
+    bot_start,
 )
-
 from handlers.model import bot_model_main
 from handlers.model.bot_model_main import LSTMClassifier
+from utils.database import sql_start
+from utils.ner_and_clean import initialize_natasha
 
 
-async def main():
+async def main() -> None:
     """
     Main bot function.
     """

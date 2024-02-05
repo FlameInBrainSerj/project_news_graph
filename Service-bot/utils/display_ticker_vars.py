@@ -101,4 +101,7 @@ TICKERS = [
     "YNDX",
 ]
 
-COMPANIES_API_STRING = "http://iss.moex.com/iss/engines/stock/markets/shares/securities/{}/candles.json?from={}&interval=60"
+COMPANIES_API_STRING = (
+    "http://iss.moex.com/iss/engines/stock/markets/"
+    "shares/securities/{}/candles.json?from={}&interval=60"
+)

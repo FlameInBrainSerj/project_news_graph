@@ -5,10 +5,12 @@ description = ""
 authors = ["FlameInBrainSerj <Krivosheev.sergey.01@mail.ru>"]
 readme = "README.md"
 
+
 [[tool.poetry.source]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/cpu"
 priority = "supplemental"
+
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
@@ -21,7 +23,6 @@ annotated-types = "0.6.0"
 astunparse = "1.6.3"
 async-timeout = "4.0.3"
 attrs = "23.2.0"
-black = "23.12.1"
 build = "1.0.3"
 cachecontrol = "0.13.1"
 cachetools = "5.3.2"
@@ -144,6 +145,27 @@ wsproto = "1.2.0"
 yargy = "0.16.0"
 yarl = "1.9.4"
 zipp = "3.17.0"
+types-psycopg2 = "^2.9.21.20240201"
+types-pytz = "^2024.1.0.20240203"
+types-requests = "^2.31.0.20240125"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.0.0"
+coverage = "^7.4.1"
+pytest-cov = "^4.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.1.1"
+flake8 = "^7.0.0"
+isort = "^5.13.2"
+mypy = "^1.8.0"
+pre-commit = "^3.6.0"
+flake8-bugbear = "^24.1.17"
+flake8-builtins = "^2.2.0"
+pep8-naming = "^0.13.3"
+flake8-commas = "^2.1.0"
 
 
 [build-system]

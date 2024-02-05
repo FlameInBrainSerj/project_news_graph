@@ -1,28 +1,22 @@
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
-from aiogram.enums import ParseMode
-from aiogram.fsm.state import State, StatesGroup
-from aiogram.fsm.context import FSMContext
-from numpy import ndarray
-
-import torch
-from torch import nn
-from torch.utils.data import DataLoader
-from torchtext.vocab import Vocab
-
-import json
 from pathlib import Path
 
+import torch
+from aiogram import F, Router
+from aiogram.enums import ParseMode
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import CallbackQuery, Message
 from handlers.model.bot_model_buttons import model_btns
-from handlers.model.scrapers import websites_xpath, parse_page
-
-from utils.ner_and_clean import ner_and_clear_text
+from handlers.model.scrapers import parse_page, websites_xpath
+from torch import nn
+from torchtext.vocab import Vocab
 from utils.custom_exceptions import ParseError
 from utils.models_vars import MAXLEN, MODEL_OUTPUT
+from utils.ner_and_clean import ner_and_clear_text
 from utils.text_messages import (
-    MODEL_INFO,
     INSERT_LINK_MSG,
     INSERT_TEXT_MSG,
+    MODEL_INFO,
     PREDICTION_LEVEL_1,
     PREDICTION_LEVEL_3,
 )
@@ -32,7 +26,7 @@ router = Router()
 
 
 class LSTMClassifier(nn.Module):
-    def __init__(self, emb_dim, hid_dim, n_layers, vocab):
+    def __init__(self, emb_dim: int, hid_dim: int, n_layers: int, vocab: Vocab):
         super(LSTMClassifier, self).__init__()
 
         self.vocab = vocab
@@ -41,7 +35,8 @@ class LSTMClassifier(nn.Module):
         self.n_layers = n_layers
 
         self.embedding_layer = nn.Embedding(
-            num_embeddings=len(self.vocab), embedding_dim=self.emb_dim
+            num_embeddings=len(self.vocab),
+            embedding_dim=self.emb_dim,
         )
 
         self.lstm = nn.LSTM(
@@ -53,11 +48,14 @@ class LSTMClassifier(nn.Module):
 
         self.linear = nn.Linear(self.hid_dim, 3)
 
-    def forward(self, X_batch):
-        embeddings = self.embedding_layer(X_batch)
+    def forward(self, x_batch: torch.Tensor) -> torch.Tensor:
+        embeddings = self.embedding_layer(x_batch)
         hidden, carry = torch.zeros(
-            self.n_layers, len(X_batch), self.hid_dim, device=device
-        ), torch.zeros(self.n_layers, len(X_batch), self.hid_dim, device=device)
+            self.n_layers,
+            len(x_batch),
+            self.hid_dim,
+            device=device,
+        ), torch.zeros(self.n_layers, len(x_batch), self.hid_dim, device=device)
         output, (hidden, carry) = self.lstm(embeddings, (hidden, carry))
         return self.linear(output[:, -1])
 
@@ -72,20 +70,22 @@ class ModelInference(StatesGroup):
 
 
 @router.callback_query(F.data == "make_prediction")
-async def msg_model(callback: CallbackQuery):
+async def msg_model(callback: CallbackQuery) -> None:
     """
     Send message for the user about the model prediction and display model's buttons.
 
     :param callback: warning
     :type callback: CallbackQuery
     """
-    await callback.answer(cache_time=1)
-    await callback.message.answer(
-        f"What would you like to do with the model?", reply_markup=model_btns()
-    )
+    if callback.message:
+        await callback.answer(cache_time=1)
+        await callback.message.answer(
+            "What would you like to do with the model?",
+            reply_markup=model_btns(),
+        )
 
 
-def initialize_models_and_vocabs():
+def initialize_models_and_vocabs() -> None:
     """
     Initialize models and tokenizers for them.
     """
@@ -98,13 +98,16 @@ def initialize_models_and_vocabs():
     comp_model = torch.load(model_path_unif / "comp_model.h5", map_location=device)
     ind_model = torch.load(model_path_unif / "ind_model.h5", map_location=device)
     glob_moex_model = torch.load(
-        model_path_unif / "glob_moex_model.h5", map_location=device
+        model_path_unif / "glob_moex_model.h5",
+        map_location=device,
     )
     glob_rvi_model = torch.load(
-        model_path_unif / "glob_rvi_model.h5", map_location=device
+        model_path_unif / "glob_rvi_model.h5",
+        map_location=device,
     )
     glob_rubusd_model = torch.load(
-        model_path_unif / "glob_rubusd_model.h5", map_location=device
+        model_path_unif / "glob_rubusd_model.h5",
+        map_location=device,
     )
 
     comp_vocab = torch.load(vocab_path_unif / "comp_vocab.pt")
@@ -114,7 +117,7 @@ def initialize_models_and_vocabs():
     glob_rubusd_vocab = torch.load(vocab_path_unif / "glob_rubusd_vocab.pt")
 
 
-def tokenize_and_pad_seq_text(text: str, vocab: Vocab):
+def tokenize_and_pad_seq_text(text: str, vocab: Vocab) -> torch.Tensor:
     """
     Tokenize text and pad tokenized text according to MAXLEN.
 
@@ -130,15 +133,16 @@ def tokenize_and_pad_seq_text(text: str, vocab: Vocab):
     text = vocab(text.split(" "))
     # Pad or truncate the sequence
     text = [
-        text + ([0] * (MAXLEN - len(text))) if len(text) < MAXLEN else text[:MAXLEN]
+        text + ([0] * (MAXLEN - len(text))) if len(text) < MAXLEN else text[:MAXLEN],
     ][0]
 
     return torch.tensor(text, dtype=torch.int32).reshape(1, -1)
 
 
-def prediction_raw_text(text: str):
+def prediction_raw_text(text: str) -> str:
     """
-    Make predictions of news' influence on financial instruments in accordance with certain levels with beautiful message.
+    Make predictions of news' influence on financial instruments
+    in accordance with certain levels with beautiful message.
 
     :param text: text of the news
     :type text: str
@@ -187,19 +191,20 @@ def prediction_raw_text(text: str):
 
 
 @router.callback_query(F.data == "model_info")
-async def msg_model_info(callback: CallbackQuery):
+async def msg_model_info(callback: CallbackQuery) -> None:
     """
     Display information about the model.
 
     :param callback: display model info
     :type callback: CallbackQuery
     """
-    await callback.answer(cache_time=1)
-    await callback.message.answer(MODEL_INFO, parse_mode=ParseMode.MARKDOWN_V2)
+    if callback.message:
+        await callback.answer(cache_time=1)
+        await callback.message.answer(MODEL_INFO, parse_mode=ParseMode.MARKDOWN_V2)
 
 
 @router.callback_query(F.data == "insert_link")
-async def msg_insert_link(callback: CallbackQuery, state: FSMContext):
+async def msg_insert_link(callback: CallbackQuery, state: FSMContext) -> None:
     """
     Ask to insert the link. Changes state to pass_link.
 
@@ -208,16 +213,17 @@ async def msg_insert_link(callback: CallbackQuery, state: FSMContext):
     :param state: state of operation, changes to pass_link
     :type state: FSMContext
     """
-    await callback.answer(cache_time=1)
-    await callback.message.answer(
-        INSERT_LINK_MSG.format(websites=[*websites_xpath.keys()]),
-        parse_mode=ParseMode.HTML,
-    )
-    await state.set_state(ModelInference.pass_link)
+    if callback.message:
+        await callback.answer(cache_time=1)
+        await callback.message.answer(
+            INSERT_LINK_MSG.format(websites=[*websites_xpath.keys()]),
+            parse_mode=ParseMode.HTML,
+        )
+        await state.set_state(ModelInference.pass_link)
 
 
 @router.message(ModelInference.pass_link)
-async def make_prediction_link(msg: Message, state: FSMContext):
+async def make_prediction_link(msg: Message, state: FSMContext) -> None:
     """
     Parse news' webpage. Return the model prediction.
 
@@ -226,15 +232,16 @@ async def make_prediction_link(msg: Message, state: FSMContext):
     :param state: state of operation, clears in the end
     :type state: FSMContext
     """
-    url = msg.text.lower()
-    text = False
+    if msg.text:
+        url = msg.text.lower()
+    text = ""
 
     try:
         for site in websites_xpath.keys():
             if site in url:
                 text = parse_page(url, site)
 
-        if text:
+        if len(text):
             await msg.answer(
                 prediction_raw_text(text),
                 parse_mode=ParseMode.MARKDOWN_V2,
@@ -250,7 +257,7 @@ async def make_prediction_link(msg: Message, state: FSMContext):
 
 
 @router.callback_query(F.data == "insert_text")
-async def msg_insert_text(callback: CallbackQuery, state: FSMContext):
+async def msg_insert_text(callback: CallbackQuery, state: FSMContext) -> None:
     """
     Ask to insert the text. Changes state to pass_text.
 
@@ -259,16 +266,17 @@ async def msg_insert_text(callback: CallbackQuery, state: FSMContext):
     :param state: state of operation, changes to pass_text
     :type state: FSMContext
     """
-    await callback.answer(cache_time=1)
-    await callback.message.answer(
-        INSERT_TEXT_MSG,
-        parse_mode=ParseMode.HTML,
-    )
-    await state.set_state(ModelInference.pass_text)
+    if callback.message:
+        await callback.answer(cache_time=1)
+        await callback.message.answer(
+            INSERT_TEXT_MSG,
+            parse_mode=ParseMode.HTML,
+        )
+        await state.set_state(ModelInference.pass_text)
 
 
 @router.message(ModelInference.pass_text)
-async def make_prediction_text(msg: Message, state: FSMContext):
+async def make_prediction_text(msg: Message, state: FSMContext) -> None:
     """
     Return the model prediction.
 
@@ -277,8 +285,9 @@ async def make_prediction_text(msg: Message, state: FSMContext):
     :param state: state of operation, clears in the end
     :type state: FSMContext
     """
-    await msg.answer(
-        prediction_raw_text(msg.text.lower()),
-        parse_mode=ParseMode.MARKDOWN_V2,
-    )
-    await state.clear()
+    if msg.text:
+        await msg.answer(
+            prediction_raw_text(msg.text.lower()),
+            parse_mode=ParseMode.MARKDOWN_V2,
+        )
+        await state.clear()

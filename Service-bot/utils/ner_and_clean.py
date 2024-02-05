@@ -1,17 +1,18 @@
 import re
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from typing import Tuple
+
 import nltk
 from natasha import (
-    Segmenter,
+    Doc,
     MorphVocab,
     NewsEmbedding,
     NewsMorphTagger,
     NewsNERTagger,
-    Doc,
+    Segmenter,
 )
-
-from utils.verification_dict import companies, additional_stopwords
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from utils.verification_dict import additional_stopwords, companies
 
 nltk.download("stopwords")
 nltk.download("punkt")
@@ -24,7 +25,7 @@ clean_text = re.compile("[^а-яa-z\s]")
 stop_words = stopwords.words("russian") + additional_stopwords
 
 
-def initialize_natasha():
+def initialize_natasha() -> None:
     """
     Initialize natasha for NER.
     """
@@ -37,7 +38,7 @@ def initialize_natasha():
     ner_tagger = NewsNERTagger(emb)
 
 
-def clear_text(text: str):
+def clear_text(text: str) -> str:
     """
     Clear text from mess.
 
@@ -54,7 +55,7 @@ def clear_text(text: str):
     return del_spaces.sub(" ", res_text)
 
 
-def del_stopwords(text: str):
+def del_stopwords(text: str) -> str:
     """
     Delete stopwords.
 
@@ -65,13 +66,13 @@ def del_stopwords(text: str):
     :return text: text without stopwords
     """
     clean_tokens = tuple(
-        map(lambda x: x if x not in stop_words else "", word_tokenize(text))
+        map(lambda x: x if x not in stop_words else "", word_tokenize(text)),
     )
     res_text = " ".join(clean_tokens)
     return res_text
 
 
-def lemmatize(text: str):
+def lemmatize(text: str) -> str:
     """
     Lemmatize the text.
 
@@ -81,18 +82,18 @@ def lemmatize(text: str):
     :rtype: str
     :return text: lemmatized text
     """
-    text = Doc(text)
-    text.segment(segmenter)
-    text.tag_morph(morph_tagger)
-    for token in text.tokens:
+    doc = Doc(text)
+    doc.segment(segmenter)
+    doc.tag_morph(morph_tagger)
+    for token in doc.tokens:
         token.lemmatize(morph_vocab)
-    text.tag_ner(ner_tagger)
-    for span in text.spans:
+    doc.tag_ner(ner_tagger)
+    for span in doc.spans:
         span.normalize(morph_vocab)
-    return " ".join([token.lemma for token in text.tokens])
+    return " ".join([token.lemma for token in doc.tokens])
 
 
-def ner_and_clear_text(text: str):
+def ner_and_clear_text(text: str) -> tuple[int, str]:
     """
     Get the cleared lemmatized text without stopword and get its level.
 
@@ -108,7 +109,7 @@ def ner_and_clear_text(text: str):
     text = del_stopwords(text)
     text = lemmatize(text)
 
-    for key, pattern in companies.items():
+    for _, pattern in companies.items():
         obj = re.search(pattern, text)
         if obj:
             return 3, text

@@ -1,5 +1,4 @@
 import psycopg2
-
 from config_reader import config
 
 host = config.host.get_secret_value()
@@ -9,12 +8,16 @@ user = config.user.get_secret_value()
 password = config.password.get_secret_value()
 
 conn = psycopg2.connect(
-    dbname=database, user=user, password=password, host=host, port=port
+    dbname=database,
+    user=user,
+    password=password,
+    host=host,
+    port=port,
 )
 cur = conn.cursor()
 
 
-def sql_start():
+def sql_start() -> None:
     """
     Connects to database. Create table of reviews if it does not exist.
     Table consist of user_id, score and feedback fields.
@@ -36,13 +39,13 @@ def sql_start():
         score INT NOT NULL,
         feedback TEXT NOT NULL
         );
-        """
+        """,
     )
 
     conn.commit()
 
 
-async def add_feedback_to_db(user_id: int, score: int, feedback: str):
+def add_feedback_to_db(user_id: int, score: int, feedback: str) -> None:
     """Inserts user review to our database.
 
     :param user_id: unique telegram user_id
@@ -52,7 +55,10 @@ async def add_feedback_to_db(user_id: int, score: int, feedback: str):
     :param feedback: user textual feedback on our app
     :type feedback: str
     """
-    insert_query = f"INSERT INTO reviews (user_id, score, feedback) VALUES (%s, %s, %s) ON CONFLICT (user_id) DO NOTHING;"
+    insert_query = (
+        "INSERT INTO reviews (user_id, score, feedback)"
+        "VALUES (%s, %s, %s) ON CONFLICT (user_id) DO NOTHING;"
+    )
     record_to_insert = (user_id, score, feedback)
     cur.execute(insert_query, record_to_insert)
     conn.commit()
@@ -74,6 +80,6 @@ async def read_feedback_from_db() -> str:
         [
             "user_id: {}\nscore: {}\nfeedback: {}\n".format(x[0], x[1], x[2])
             for x in query_results
-        ]
+        ],
     )
     return average + str(text)

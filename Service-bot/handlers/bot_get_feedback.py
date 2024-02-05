@@ -1,15 +1,14 @@
-from aiogram import Router, F
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
-from aiogram.fsm.state import State, StatesGroup
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (
-    Message,
     CallbackQuery,
+    KeyboardButton,
+    Message,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
-    KeyboardButton,
 )
-
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from utils.database import add_feedback_to_db
 from utils.verification_dict import available_scores
 
@@ -40,7 +39,7 @@ def get_review_score() -> ReplyKeyboardMarkup:
 
 
 @router.callback_query(F.data == "leave_feedback")
-async def write_review(callback: CallbackQuery, state: FSMContext):
+async def write_review(callback: CallbackQuery, state: FSMContext) -> None:
     """
     Offers user to select digital score.
 
@@ -48,17 +47,17 @@ async def write_review(callback: CallbackQuery, state: FSMContext):
     :type callback: CallbackQuery
     :param state: current state of operation, changes to scoring
     :type state: FSMContext"""
-
-    await callback.answer(cache_time=1)
-    await callback.message.answer(
-        "Please select one of the digits from the list below:",
-        reply_markup=get_review_score(),
-    )
-    await state.set_state(Feedback.scoring)
+    if callback.message:
+        await callback.answer(cache_time=1)
+        await callback.message.answer(
+            "Please select one of the digits from the list below:",
+            reply_markup=get_review_score(),
+        )
+        await state.set_state(Feedback.scoring)
 
 
 @router.message(Feedback.scoring, F.text.in_(available_scores))
-async def feed_score(msg: Message, state: FSMContext):
+async def feed_score(msg: Message, state: FSMContext) -> None:
     """
     Recieves score. Thanks for score. Changes status to giving feedback.
 
@@ -66,16 +65,17 @@ async def feed_score(msg: Message, state: FSMContext):
     :type msg: Message
     :param state: current state of operation, changes to giving feedback
     :type state: FSMContext"""
-    await state.update_data(chosen_score=msg.text.lower())
-    await msg.answer(
-        text="Thank you for your assessment. Please also leave a review.",
-        reply_markup=ReplyKeyboardRemove(),
-    )
-    await state.set_state(Feedback.giving_feedback)
+    if msg.text:
+        await state.update_data(chosen_score=msg.text.lower())
+        await msg.answer(
+            text="Thank you for your assessment. Please also leave a review.",
+            reply_markup=ReplyKeyboardRemove(),
+        )
+        await state.set_state(Feedback.giving_feedback)
 
 
 @router.message(Feedback.scoring)
-async def incorrect_score(msg: Message):
+async def incorrect_score(msg: Message) -> None:
     """
     Warnes user of incorrect score.
 
@@ -90,7 +90,7 @@ async def incorrect_score(msg: Message):
 
 
 @router.message(Feedback.giving_feedback, F.text.lower().len() <= 1000)
-async def receive_feedback(msg: Message, state: FSMContext):
+async def receive_feedback(msg: Message, state: FSMContext) -> None:
     """
     Takes feedback and thanks for it. Clears state of operation.
 
@@ -99,20 +99,25 @@ async def receive_feedback(msg: Message, state: FSMContext):
     :param state: state of giving feedback, clears after sending data to database
     :type state: FSMContext
     """
-    await state.update_data(given_feedback=msg.text.lower())
+    if msg.text:
+        await state.update_data(given_feedback=msg.text.lower())
     await msg.answer(
         text="Thank you for your feedback, it is very valuable to us!\n\n"
-        "P.S. If you have already given us a feedback earlier, only first feedback will be saved"
+        "P.S. If you have already given us a feedback earlier, "
+        "only first feedback will be saved",
     )
     data = await state.get_data()
-    await add_feedback_to_db(
-        msg.from_user.id, int(data["chosen_score"]), data["given_feedback"]
-    )
+    if msg.from_user:
+        await add_feedback_to_db(
+            msg.from_user.id,
+            int(data["chosen_score"]),
+            data["given_feedback"],
+        )
     await state.clear()
 
 
 @router.message(Feedback.giving_feedback)
-async def incorrect_feedback(msg: Message):
+async def incorrect_feedback(msg: Message) -> None:
     """
     Gives user warning of too big input.
 
@@ -120,5 +125,6 @@ async def incorrect_feedback(msg: Message):
     :type msg: Message
     """
     await msg.answer(
-        text="Your message is too big. Please try to limit yourself to 1000 characters."
+        text="Your message is too big. "
+        "Please try to limit yourself to 1000 characters.",
     )

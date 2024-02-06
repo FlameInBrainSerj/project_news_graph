@@ -2,6 +2,7 @@
 Data/
 Modeling/artifacts/
 Modeling/tokenizers/
+Service-bot/aiogram_tests
 Service-bot/utils/models/
 Service-bot/utils/tokenizers/
 
@@ -134,7 +135,7 @@ celerybeat.pid
 # Environments
 Service-bot/.env
 # .env
-.venv
+.venv*
 env/
 venv/
 ENV/

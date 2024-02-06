@@ -11,7 +11,7 @@ pre-commit:
 isort:
 	isort . --profile black
 
-black:s
+black:
 	black .
 
 mypy:

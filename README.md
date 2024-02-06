@@ -3,6 +3,7 @@
 [![Service-bot Build Status](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/service_bot.yml/badge.svg?branch=main)](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/service_bot.yml)
 
 **Curator:** Andrey Babynin (@maninoffice)
+
 **Team members:** Maxim Dumenkov (@maxodum), Sergey Krivosheev (@FlameInBrain)
 
 **Project description:** Parsing news, analyzing them using NLP and GNN methods and creating services around the resulting models, namely:
@@ -59,7 +60,7 @@
     - Organize additional training of the model: periodically additionally parse news, put them in the database, write a pipeline for additional training of the model (MLOps) and update the weights and graph structure of the model lying in the back of the Telegram bot
 
 **Telegram-bot:** [tg-bot](https://t.me/project_news_anal_bot)
-**FastAPI service:** <pufto, but it won’t be pufto>
-**Streamlit mini-app:** <pufto, but it won’t be pufto>
 
-**Screencast of tg-bot functionality:** [video](https://www.veed.io/view/a36fbd04-e96d-4a42-9d8d-0034f698fd83?panel=share)
+**FastAPI service:** <pufto, but it won’t be pufto>
+
+**Streamlit mini-app:** <pufto, but it won’t be pufto>

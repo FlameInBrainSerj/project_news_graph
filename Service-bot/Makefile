@@ -9,7 +9,7 @@ pre-commit:
 	pre-commit autoupdate
 
 isort:
-	isort . --profile black
+	isort .
 
 black:
 	black .

@@ -6,6 +6,7 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
+
 from utils.display_ticker_vars import COMPANIES_API_STRING, TICKERS
 from utils.text_messages import (
     MSG_CHOOSE_TICKER,

@@ -12,6 +12,7 @@ from natasha import (
 )
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+
 from utils.verification_dict import additional_stopwords, companies
 
 nltk.download("stopwords")

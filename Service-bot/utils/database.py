@@ -1,4 +1,5 @@
 import psycopg2
+
 from config_reader import config
 
 host = config.host.get_secret_value()

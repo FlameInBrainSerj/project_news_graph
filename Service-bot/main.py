@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+
 from config_reader import config
 from handlers import (
     bot_display_feedback,

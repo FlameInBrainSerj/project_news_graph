@@ -14,26 +14,28 @@ repos:
     rev: 5.13.2
     hooks:
       - id: isort
-        exclude: __init__.py
-        args: ['--settings-path', 'Service-bot/.isort.cfg']
+        exclude: __init__.py, Research/
+        args: ['--settings-path', '.isort.cfg']
 
   - repo: https://github.com/psf/black
-    rev: 24.1.1
+    rev: 24.2.0
     hooks:
       - id: black
+        exclude: Research/
         language_version: python3.10
 
   - repo: https://github.com/PyCQA/flake8
     rev: 7.0.0
     hooks:
       - id: flake8
-        exclude: __init__.py
+        exclude: __init__.py, Research/
         args: [ "--ignore=W605,F401", "--max-line-length=88", "--max-complexity=10"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0
     hooks:
       - id: mypy
+        exclude: Research/
         args: [
                 "--disallow-untyped-defs",
                 "--ignore-missing-imports",

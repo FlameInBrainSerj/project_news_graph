@@ -3,7 +3,6 @@ import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-
 from utils.custom_exceptions import ParseError
 from utils.text_messages import ERROR_MSG_PAGE_NOT_LOADED
 

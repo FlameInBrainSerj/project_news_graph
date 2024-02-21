@@ -1,0 +1,6 @@
+outs:
+- md5: 727860ff1e6a76386a341107170775b3.dir
+  size: 1785560
+  nfiles: 5
+  hash: md5
+  path: vocabs

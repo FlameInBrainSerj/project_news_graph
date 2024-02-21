@@ -1,6 +1,5 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery, ReplyKeyboardRemove
-
 from utils.database import read_feedback_from_db
 
 router = Router()

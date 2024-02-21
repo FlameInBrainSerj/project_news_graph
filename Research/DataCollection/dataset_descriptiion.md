@@ -2,10 +2,10 @@
 
 Dataset was formed basing on the news connected to the financial sector of economy
 
-Start date: 01.01.2019  
+Start date: 01.01.2019
 End date: 31.12.2023
 
-News websites where the news were taken: 
+News websites where the news were taken:
 
 | Website | Number of obs. |
 |:------:|:------:|

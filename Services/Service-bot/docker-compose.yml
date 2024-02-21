@@ -1,4 +1,4 @@
-services:  
+services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
@@ -36,7 +36,7 @@ services:
       retries: 3
     networks:
       - appnet
-      
+
   db:
     image: postgres
     container_name: postgres

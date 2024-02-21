@@ -1,7 +1,6 @@
 from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery
-
 from utils.text_messages import ABOUT_SERVICE, DISCLAIMER
 
 router = Router()

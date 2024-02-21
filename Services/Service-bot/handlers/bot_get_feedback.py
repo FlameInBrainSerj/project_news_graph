@@ -9,7 +9,6 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
-
 from utils.database import add_feedback_to_db
 from utils.verification_dict import available_scores
 

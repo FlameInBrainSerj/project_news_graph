@@ -2,6 +2,13 @@ import re
 import warnings
 
 import pandas as pd
+from mypy_utils import (
+    additional_stopwords,
+    companies,
+    federal_instances,
+    industries,
+    politicians,
+)
 from natasha import (
     Doc,
     MorphVocab,
@@ -13,13 +20,6 @@ from natasha import (
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from tqdm.auto import tqdm
-from utils import (
-    additional_stopwords,
-    companies,
-    federal_instances,
-    industries,
-    politicians,
-)
 
 warnings.filterwarnings("ignore")
 

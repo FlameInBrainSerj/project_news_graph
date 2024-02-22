@@ -34,7 +34,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install mypy flake8
           cd Services && cd Service-bot
-          pwd
           poetry install --no-root
 
 
@@ -50,7 +49,7 @@ jobs:
           --disable-error-code=func-returns-value \
           --disable-error-code=import-untyped \
           --disable-error-code=call-arg \
-          .
+          Services/Service-bot
 
       - name: Check typing with flake8
         run: |
@@ -59,4 +58,4 @@ jobs:
           --max-line-length=88 \
           --max-complexity=10 \
           --exclude=.git,__pycache__,build,dist,.venv \
-          .
+          Services/Service-bot

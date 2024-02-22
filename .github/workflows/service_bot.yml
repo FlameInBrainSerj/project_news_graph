@@ -34,6 +34,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install mypy flake8
           cd Services && cd Service-bot
+          pwd
           poetry install --no-root
 
 

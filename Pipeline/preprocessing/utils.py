@@ -261,6 +261,117 @@ federal_instances = {
     ),
 }
 
+additional_stopwords = [
+    "которых",
+    "которые",
+    "твой",
+    "которой",
+    "которого",
+    "сих",
+    "ком",
+    "свой",
+    "твоя",
+    "этими",
+    "слишком",
+    "нами",
+    "всему",
+    "будь",
+    "саму",
+    "чаще",
+    "ваше",
+    "сами",
+    "наш",
+    "затем",
+    "самих",
+    "наши",
+    "ту",
+    "каждое",
+    "мочь",
+    "весь",
+    "этим",
+    "наша",
+    "своих",
+    "оба",
+    "который",
+    "зато",
+    "те",
+    "этих",
+    "вся",
+    "ваш",
+    "такая",
+    "теми",
+    "ею",
+    "которая",
+    "нередко",
+    "каждая",
+    "также",
+    "чему",
+    "собой",
+    "самими",
+    "нем",
+    "вами",
+    "ими",
+    "откуда",
+    "такие",
+    "тому",
+    "та",
+    "очень",
+    "сама",
+    "нему",
+    "алло",
+    "оно",
+    "этому",
+    "кому",
+    "тобой",
+    "таки",
+    "твоё",
+    "каждые",
+    "твои",
+    "нею",
+    "самим",
+    "ваши",
+    "ваша",
+    "кем",
+    "мои",
+    "однако",
+    "сразу",
+    "свое",
+    "ними",
+    "всё",
+    "неё",
+    "тех",
+    "хотя",
+    "всем",
+    "тобою",
+    "тебе",
+    "одной",
+    "другие",
+    "само",
+    "эта",
+    "самой",
+    "моё",
+    "своей",
+    "такое",
+    "всею",
+    "будут",
+    "своего",
+    "кого",
+    "свои",
+    "мог",
+    "нам",
+    "особенно",
+    "её",
+    "самому",
+    "наше",
+    "кроме",
+    "вообще",
+    "вон",
+    "мною",
+    "никто",
+    "это",
+]
+
+
 months = {
     "января": "1",
     "февраля": "2",
@@ -278,12 +389,34 @@ months = {
 
 
 def month_convert(date: str) -> str:
+    """
+    Convert date's month name to month number.
+
+    :param date: date of the news
+    :type date: str
+
+    :rtype: str
+    :return date: date with month name converted month number
+    """
     for word, initial in months.items():
         date = date.replace(word.lower(), initial)
     return date
 
 
 def date_changer(date: str, convert_month: bool, pattern: str) -> datetime:
+    """
+    Convert date to certain format and transform to datetime type.
+
+    :param date: date of the news
+    :type date: str
+    :param convert_month: is month conversion required
+    :type convert_month: bool
+    :param pattern: final format of the date
+    :type pattern: str
+
+    :rtype: datetime
+    :return datetime_object: date in certain format and in datetime type
+    """
     if convert_month:
         date = month_convert(date)
 
@@ -292,6 +425,15 @@ def date_changer(date: str, convert_month: bool, pattern: str) -> datetime:
 
 
 def date_ria_extract(df: pd.DataFrame) -> list[str]:
+    """
+    Extract dates from the Ria news.
+
+    :param df: dataset with date column
+    :type df: pd.DataFrame
+
+    :rtype: list[str]
+    :return dates_init: dates of Ria
+    """
     pattern = (
         r"^([0-1]?[0-9]|2?[0-3]):([0-5]\d)\s([1-9]|([012][0-9])"
         r"|(3[01]))[.]([0]{0,1}[1-9]|1[012])[.]\d\d\d\d"

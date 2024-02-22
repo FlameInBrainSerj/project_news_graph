@@ -1,7 +1,7 @@
 import re
 
 import pandas as pd
-from mypy_utils import date_changer, date_ria_extract
+from my_utils import date_changer, date_ria_extract
 
 
 def remove_duplicated_urls(df: pd.DataFrame) -> None:

@@ -2,7 +2,7 @@ import re
 import warnings
 
 import pandas as pd
-from mypy_utils import (
+from my_utils import (
     additional_stopwords,
     companies,
     federal_instances,

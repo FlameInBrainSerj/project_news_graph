@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 import hydra
@@ -27,6 +28,10 @@ def run_scrapers(cfg: DictConfig) -> None:
     date_start = datetime.strptime(cfg.date_start, "%Y-%m-%d")
     date_end = datetime.strptime(cfg.date_end, "%Y-%m-%d")
     number_of_days = (abs(date_start - date_end)).days + 1
+
+    # Create folder for new data
+    new_dir_path = f"{cfg.date_start}_{cfg.date_end}"
+    os.system(f"mkdir {str(PROJECT_ROOT / cfg.data_path / new_dir_path)}")
 
     # Lists of dates
     lst_dates_smart_lab = [
@@ -92,16 +97,16 @@ def unite_data(cfg: DictConfig) -> None:
     :type cfg: DictConfig
     """
     df_smart_lab = pd.read_parquet(
-        f"{cfg.data_path}/smart_lab_{cfg.date_start}_{cfg.date_end}.parquet",
+        f"{cfg.data_path}/{cfg.date_start}_{cfg.date_end}/smart_lab.parquet",
     )
     df_kommersant = pd.read_parquet(
-        f"{cfg.data_path}/kommersant_{cfg.date_start}_{cfg.date_end}.parquet",
+        f"{cfg.data_path}/{cfg.date_start}_{cfg.date_end}/kommersant.parquet",
     )
     df_interfax = pd.read_parquet(
-        f"{cfg.data_path}/interfax_{cfg.date_start}_{cfg.date_end}.parquet",
+        f"{cfg.data_path}/{cfg.date_start}_{cfg.date_end}/interfax.parquet",
     )
     df_ria = pd.read_parquet(
-        f"{cfg.data_path}/ria_{cfg.date_start}_{cfg.date_end}.parquet",
+        f"{cfg.data_path}/{cfg.date_start}_{cfg.date_end}/ria.parquet",
     )
 
     df = pd.concat(
@@ -111,7 +116,7 @@ def unite_data(cfg: DictConfig) -> None:
     )
 
     df.to_parquet(
-        f"{cfg.data_path}/full_data_{cfg.date_start}_{cfg.date_end}.parquet",
+        f"{cfg.data_path}/{cfg.date_start}_{cfg.date_end}/full_data.parquet",
         index=False,
     )
 

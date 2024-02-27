@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import date, datetime
 
 import pandas as pd
 
@@ -445,3 +445,26 @@ def date_ria_extract(df: pd.DataFrame) -> list[str]:
         dates_init.append(result[0])
 
     return dates_init
+
+
+def third_thursday(year: int, month: int) -> date:
+    """
+    Return date for monthly option expiration given year and month.
+
+    :param year: year of the date
+    :type year: int
+    :param month: month of the date
+    :type month: int
+
+    :rtype: date
+    :return third: date for monthly option expiration
+    """
+    # The 15th is the lowest third day in the month
+    third = date(year, month, 15)
+    # What day of the week is the 15th?
+    w = third.weekday()
+    # Thursday is weekday 3
+    if w != 3:
+        # Replace just the day (of month)
+        third = third.replace(day=(15 + (3 - w) % 7))
+    return third

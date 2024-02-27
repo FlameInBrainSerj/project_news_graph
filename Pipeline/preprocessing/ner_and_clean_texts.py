@@ -33,6 +33,15 @@ ner_tagger = NewsNERTagger(emb)
 
 
 def prepare_text(text: str) -> str:
+    """
+    Remove excessive \n, spaces, and tags, brackets, digits.
+
+    :param text: body of the text (news)
+    :type text: str
+
+    :rtype: str
+    :return res_text: prepared text
+    """
     del_n = re.compile("\n")
     del_tags = re.compile("<[^>]*>")
     del_brackets = re.compile("\([^)]*\)")
@@ -42,11 +51,21 @@ def prepare_text(text: str) -> str:
     text = del_n.sub(" ", str(text).lower())
     text = del_tags.sub("", text)
     text = del_brackets.sub("", text)
-    res_text = clean_text.sub("", text)
-    return del_spaces.sub(" ", res_text)
+    text = clean_text.sub("", text)
+    res_text = del_spaces.sub(" ", text)
+    return res_text
 
 
 def del_stopwords(text: str) -> str:
+    """
+    Remove stopwords.
+
+    :param text: body of the text (news)
+    :type text: str
+
+    :rtype: str
+    :return res_text: prepared text
+    """
     clean_tokens = tuple(
         map(lambda x: x if x not in stop_words else "", word_tokenize(text)),
     )
@@ -54,7 +73,16 @@ def del_stopwords(text: str) -> str:
     return res_text
 
 
-def lemmatize_and_get_tokens_lst(text: str) -> str:
+def lemmatize_text(text: str) -> str:
+    """
+    Lemmatize text.
+
+    :param text: body of the text (news)
+    :type text: str
+
+    :rtype: str
+    :return res_text: lemmatized text
+    """
     doc = Doc(text)
 
     doc.segment(segmenter)
@@ -68,22 +96,40 @@ def lemmatize_and_get_tokens_lst(text: str) -> str:
     for span in doc.spans:
         span.normalize(morph_vocab)
 
-    return " ".join([token.lemma for token in doc.tokens])
+    res_text = " ".join([token.lemma for token in doc.tokens])
+    return res_text
 
 
 def ner_and_clear_text(df: pd.DataFrame) -> None:
+    """
+    Complete all text cleaning steps and NER.
 
-    for i in tqdm(range(df.shape[0])):
+    :param df: dataset
+    :type df: pd.DataFrame
+    """
+
+    for i in tqdm(range(df.shape[0]), desc="NER and clear texts"):
         text = df.loc[i, "body"]
         text = prepare_text(text)
         text = del_stopwords(text)
 
-        df.loc[i, "text_clear"] = lemmatize_and_get_tokens_lst(
+        df.loc[i, "text_clear"] = lemmatize_text(
             text=text,
         )
 
 
 def filter_ne(clear_texts: str, filter_dict: dict) -> list[list[str]]:
+    """
+    Filter named entities found during NER step according to passed dictionary.
+
+    :param clear_texts: cleared lemmatized text
+    :type clear_texts: str
+    :param filter_dict: dictionary of target named entities
+    :type filter_dict: dict
+
+    :rtype: list[list[str]]
+    :return lst: list of lists of target named entities in texts
+    """
     lst = []
 
     for clear_text in clear_texts:
@@ -99,13 +145,22 @@ def filter_ne(clear_texts: str, filter_dict: dict) -> list[list[str]]:
 
 
 def create_column_with_ne(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Create column with named entities found in the corresponding text.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+
+    :rtype: pd.DataFrame
+    :return data: dataset with found NE as column
+    """
     companies_lst = filter_ne(df["text_clear"], companies)
     fed_and_polit_lst = filter_ne(df["text_clear"], federal_instances | politicians)
 
     data = pd.DataFrame(columns=[*df.columns, "companies"])
     rows_to_insert = []
 
-    for i in tqdm(range(df.shape[0])):
+    for i in range(df.shape[0]):
         if (len(companies_lst[i]) != 0) or (len(fed_and_polit_lst[i]) != 0):
             rows_to_insert.append(
                 {
@@ -131,12 +186,24 @@ def create_companies_dataset(
     df: pd.DataFrame,
     number_of_companies_in_one_news: int,
 ) -> pd.DataFrame:
+    """
+    Create dataset with companies as named entities.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    :param number_of_companies_in_one_news: number of companies as NE that could
+     be in one text
+    :type number_of_companies_in_one_news: int
+
+    :rtype: pd.DataFrame
+    :return final_comp_df: dataset with companies as named entities
+    """
     final_comp_df = pd.DataFrame(columns=[*df.columns]).drop(["companies"], axis=1)
     rows_to_insert = []
 
     comp_df = df[df["companies"].apply(lambda x: len(x) != 0)].reset_index()
 
-    for i in tqdm(range(len(comp_df))):
+    for i in range(len(comp_df)):
         if len(comp_df.loc[i, "companies"]) <= number_of_companies_in_one_news:
             for company in comp_df.loc[i, "companies"]:
                 rows_to_insert.append(
@@ -166,12 +233,24 @@ def create_industries_dataset(
     df: pd.DataFrame,
     number_of_companies_in_one_news: int,
 ) -> pd.DataFrame:
+    """
+    Create dataset with industries as named entities.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    :param number_of_companies_in_one_news: number of companies as NE that could
+     be in one text
+    :type number_of_companies_in_one_news: int
+
+    :rtype: pd.DataFrame
+    :return final_comp_df: dataset with industries as named entities
+    """
     comp_df = df[df["companies"].apply(lambda x: len(x) != 0)].reset_index()
 
     ind_df = pd.DataFrame(columns=[*df.columns, "industry"]).drop(["companies"], axis=1)
     rows_to_insert = []
 
-    for i in tqdm(range(len(comp_df))):
+    for i in range(len(comp_df)):
         if len(comp_df.loc[i, "companies"]) <= number_of_companies_in_one_news:
             ind_lst = []
             for company in comp_df.loc[i, "companies"]:
@@ -202,7 +281,20 @@ def create_industries_dataset(
 def ner_and_new_datasets(
     df: pd.DataFrame,
     number_of_companies_in_one_news: int,
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """
+    Complete all steps to get companies, industries and global datasets.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    :param number_of_companies_in_one_news: number of companies as NE that could
+     be in one text
+    :type number_of_companies_in_one_news: int
+
+    :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame)
+    :return (final_comp_df, final_ind_df, final_glob_df):
+    (companies dataset, industries dataset, global dataset)
+    """
     ner_and_clear_text(df)
     data = create_column_with_ne(df=df)
 

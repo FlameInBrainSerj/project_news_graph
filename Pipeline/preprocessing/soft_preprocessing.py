@@ -5,10 +5,22 @@ from my_utils import date_changer, date_ria_extract
 
 
 def remove_duplicated_urls(df: pd.DataFrame) -> None:
+    """
+    Remove duplicated news.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    """
     df.dropna(subset=["url"], inplace=True)
 
 
 def remove_links_and_garbage(df: pd.DataFrame) -> None:
+    """
+    Remove links and uninformative garbage in the text.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    """
     links_patterns = [
         (
             r"(?:(?:https?|ftp):\/\/|www\.)[-A-Za-z0-9+&@#\/%?=~_|!:,.;]*"
@@ -39,6 +51,12 @@ def remove_links_and_garbage(df: pd.DataFrame) -> None:
 
 
 def remove_short_news(df: pd.DataFrame) -> None:
+    """
+    Remove too short news.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    """
     # Get distribution of lengths in sample
     df.loc[:, "body_length"] = df["body"].apply(len)
     # Get length by 0.04 quantile
@@ -49,6 +67,12 @@ def remove_short_news(df: pd.DataFrame) -> None:
 
 
 def dates_preprocess(df: pd.DataFrame) -> None:
+    """
+    Preprocess dates to convert to datetime format.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    """
     df_ria = df[df["website"] == "РИА"]
     ria_dates = date_ria_extract(df_ria)
 
@@ -85,6 +109,12 @@ def dates_preprocess(df: pd.DataFrame) -> None:
 
 
 def soft_preprocess(df: pd.DataFrame) -> None:
+    """
+    Complete all preprocessing steps.
+
+    :param df: dataset
+    :type df: pd.DataFrame
+    """
     remove_duplicated_urls(df)
     remove_links_and_garbage(df)
     remove_short_news(df)

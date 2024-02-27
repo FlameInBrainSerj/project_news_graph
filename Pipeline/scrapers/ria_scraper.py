@@ -87,7 +87,7 @@ def parse_ria_news_on_list_of_links_and_save(
 
     driver = webdriver.Chrome(options=webdriver_options)
 
-    for i in tqdm(range(len(lst_links))):
+    for i in tqdm(range(len(lst_links)), desc="Parse Ria links"):
 
         # To dodge heap overflow error
         if i % 100 == 0 and i != 0:
@@ -149,7 +149,7 @@ def parse_ria_news_on_list_of_links_and_save(
         },
     )
 
-    df.to_parquet(f"{data_dir_path}/ria_{start_date}_{end_date}.parquet", index=False)
+    df.to_parquet(f"{data_dir_path}/{start_date}_{end_date}/ria.parquet", index=False)
 
 
 def ria_parse(

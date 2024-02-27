@@ -1,0 +1,8 @@
+data_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/test
+data_file: comp_data.parquet
+
+model_path: data_and_artifacts/artifacts/models
+model_file: comp_model.h5
+
+vocab_path: data_and_artifacts/artifacts/vocabs
+vocab_file: comp_vocab.pt

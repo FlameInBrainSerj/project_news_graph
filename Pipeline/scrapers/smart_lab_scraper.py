@@ -93,7 +93,7 @@ def parse_smart_lab_news_on_list_of_links_and_save(
 
     driver = webdriver.Chrome(options=webdriver_options)
 
-    for i in tqdm(range(len(lst_links))):
+    for i in tqdm(range(len(lst_links)), desc="Parse Smart Lab links"):
 
         # To dodge heap overflow error
         if i % 100 == 0 and i != 0:
@@ -157,7 +157,7 @@ def parse_smart_lab_news_on_list_of_links_and_save(
     )
 
     df.to_parquet(
-        f"{data_dir_path}/smart_lab_{start_date}_{end_date}.parquet",
+        f"{data_dir_path}/{start_date}_{end_date}/smart_lab.parquet",
         index=False,
     )
 

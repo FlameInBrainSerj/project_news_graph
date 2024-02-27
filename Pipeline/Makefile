@@ -15,3 +15,9 @@ mypy:
 
 flake8:
 	flake8 .
+
+run-scrapers:
+	python .\scrapers\scrapers_main.py
+
+run-preprocessing:
+	python .\preprocessing\preprocessing_main.py

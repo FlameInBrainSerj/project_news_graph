@@ -1,8 +1,9 @@
 initial_data_path: data_and_artifacts/data_news/raw/2023-10-01_2023-10-07
 initial_file: full_data.parquet
 
-proportion_split: 0.75
+proportion_split: 0.25
 final_data_train_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/train
+final_data_val_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/val
 final_data_test_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/test
 
 number_of_companies_in_one_news: 10

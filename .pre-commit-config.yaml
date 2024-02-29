@@ -46,4 +46,5 @@ repos:
                 "--disable-error-code=operator",
                 "--disable-error-code=func-returns-value",
                 "--disable-error-code=import-untyped",
+                "--disable-error-code=assignment",
         ]

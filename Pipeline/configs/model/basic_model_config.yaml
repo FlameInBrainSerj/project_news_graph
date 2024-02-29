@@ -1,0 +1,54 @@
+# Data
+data_train_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/train
+data_val_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/val
+data_test_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/test
+data_file: comp_data.parquet
+
+# Artifacts
+model_path: data_and_artifacts/artifacts/models
+model_file: comp_model.h5
+vocab_path: data_and_artifacts/artifacts/vocabs
+vocab_file: comp_vocab.pt
+
+# Batch of Dataloader
+batch_size: 32
+# Number of workers in DataLoader
+dataloader_num_workers: 1
+
+# Columns with relative price differences in the corresponding dataset
+main_col: price_diff_percent
+# New name for the column with categorical target
+class_col: price_diff_cat
+# Define classes of the target, separating by the price_diff_percent  quantile
+target_quantile: 0.05
+
+# Max length of the text
+max_len: 500
+# Minimum frequency of the word to be added to the vocab
+min_freq: 3
+
+# Embedding dim
+emb_dim: 500
+# Hidden dim of LSTM
+hid_dim: 32
+# Number of LSTM layers
+n_layers: 1
+
+
+# Main configs
+max_epochs: 5
+learning_rate: 5e-4
+gradient_clip_val: 1.0
+# Technical configs
+val_check_interval: 1.0
+accelerator: auto
+devices: auto
+full_deterministic_mode: false
+# Debugging configs
+overfit_batches: false
+num_sanity_val_steps: 1
+# Logging
+log_every_n_steps: 1
+
+# Inference (only passed in infer.py)
+inference_mode: true

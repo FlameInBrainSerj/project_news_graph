@@ -1,3 +1,5 @@
+run-pipeline: run-scrapers run-preprocessing run-model-train run-model-inference
+
 quality-check: isort black flake8 mypy
 
 poetry:
@@ -21,3 +23,9 @@ run-scrapers:
 
 run-preprocessing:
 	python .\preprocessing\preprocessing_main.py
+
+run-model-train:
+	python .\model\train.py
+
+run-model-inference:
+	python .\model\infer.py

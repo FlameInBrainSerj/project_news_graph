@@ -1,2 +1,8 @@
+# Ignore logs of Hydra
 outputs/
+# Ignore logs of PyTorch Lightning
 lightning_logs/
+# Ignore PytorchScipt files
+*.pt
+# Ignore .h5 models
+*.h5

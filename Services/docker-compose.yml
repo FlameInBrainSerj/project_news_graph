@@ -1,0 +1,159 @@
+version: "3.7"
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - 7979:8000
+      - 9000:9000
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  bot:
+    build: /bot
+    container_name: tg_bot
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      api:
+        condition: service_started
+    networks:
+      - backend
+
+  api:
+    build:
+      context: /api
+    container_name: api_model
+    restart: unless-stopped
+    command: ["/fastapi_app/scripts/app.sh"]
+    ports:
+      - 8000:8000
+    depends_on:
+      selenium:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+
+  celery:
+    build:
+      context: /api
+    container_name: celery_app
+    command: [ "/fastapi_app/scripts/celery.sh", "celery" ]
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+
+  flower:
+    build:
+      context: /api
+    container_name: flower_app
+    command: [ "/fastapi_app/scripts/celery.sh", "flower" ]
+    depends_on:
+      redis:
+        condition: service_healthy
+      celery:
+        condition: service_started
+    ports:
+        - 8888:5555
+    networks:
+      - backend
+
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    restart: unless-stopped
+    ports:
+      - 4444:4444
+    environment:
+      - SE_NODE_SESSION_TIMEOUT=100000000
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "https://www.google.com/" ]
+      interval: 5s
+      retries: 3
+    networks:
+      - backend
+
+  db:
+    image: postgres:16
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - 5455:5432
+    env_file:
+      - api/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
+      interval: 5s
+      retries: 5
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    container_name: redis_app
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli","ping" ]
+      interval: 5s
+      retries: 5
+    networks:
+      - backend
+
+  prometheus:
+    image: prom/prometheus:v2.43.0
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    depends_on:
+      api:
+        condition: service_started
+    networks:
+      - backend
+
+  grafana:
+    image: grafana/grafana:8.5.22
+    container_name: grafana
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_config:/etc/grafana
+    depends_on:
+      prometheus:
+        condition: service_started
+    user: "0"
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend
+    driver: bridge
+
+volumes:
+  pgdata:
+  portainer_data:
+
+  prometheus_data:
+  grafana_data:
+  grafana_config:

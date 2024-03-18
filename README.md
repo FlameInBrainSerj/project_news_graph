@@ -1,6 +1,6 @@
 # Building a news graph and services around it
 
-[![Service-bot Build Status](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/service_bot.yml/badge.svg?branch=main)](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/service_bot.yml) [![Pipeline Build Status](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/FlameInBrainSerj/project_news_graph/blob/main/.github/workflows/pipeline.yml)
+[![Services Build Status](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/services.yml/badge.svg?branch=main)](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/services.yml) [![Pipeline Build Status](https://github.com/FlameInBrainSerj/project_news_graph/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/FlameInBrainSerj/project_news_graph/blob/main/.github/workflows/pipeline.yml)
 
 **Curator:** Andrey Babynin (@maninoffice)
 

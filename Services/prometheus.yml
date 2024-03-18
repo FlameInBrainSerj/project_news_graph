@@ -25,11 +25,11 @@ scrape_configs:
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
     static_configs:
-    - targets: ['api:9090']
+    - targets: ['prometheus:9090']
 
   - job_name: 'starlette_exporter'
     scrape_interval: 5s
     static_configs:
-      - targets: ['localhost:8000'] # Replace with the address of your starlette_exporter instance
+      - targets: ['api:8000'] # Replace with the address of your starlette_exporter instance
     metrics_path: /metrics
     scheme: http

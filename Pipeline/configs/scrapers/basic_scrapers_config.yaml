@@ -1,3 +1,6 @@
+# Parse start date
 date_start: 2023-10-01
+# Parse end date
 date_end: 2023-10-07
+# Path for scraped data storage
 data_path: data_and_artifacts/data_news/raw

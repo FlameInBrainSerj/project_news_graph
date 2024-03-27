@@ -1,9 +1,16 @@
+# Path to folder with previously parsed data
 initial_data_path: data_and_artifacts/data_news/raw/2023-10-01_2023-10-07
+# File name of previously parsed data
 initial_file: full_data.parquet
 
+# Proportion of split of Data on Train and Validation & Train on Train and Validation
 proportion_split: 0.25
+# Path to folder for storing the train data
 final_data_train_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/train
+# Path to folder for storing the validation data
 final_data_val_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/val
+# Path to folder for storing the test data
 final_data_test_path: data_and_artifacts/data_news/preprocessed/2023-10-01_2023-10-07/test
 
+# Remove the news which number of companies mentioned exceeds specified number
 number_of_companies_in_one_news: 10

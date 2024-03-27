@@ -10,7 +10,7 @@ model_file: comp_model.h5
 vocab_path: data_and_artifacts/artifacts/vocabs
 vocab_file: comp_vocab.pt
 
-# Batch of Dataloader
+# Batch size of Dataloader
 batch_size: 32
 # Number of workers in DataLoader
 dataloader_num_workers: 1

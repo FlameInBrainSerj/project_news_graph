@@ -6,61 +6,84 @@
 
 **Team members:** Maxim Dumenkov (@maxodum), Sergey Krivosheev (@FlameInBrain)
 
-**Project description:** Parsing news, analyzing them using NLP and GNN methods and creating services around the resulting models, namely:
-* Creation of NLP models that evaluate the 'impact' of news on certain financial instruments
-    - Definition of 'impact': how the publication of news affects/could affect certain financial instruments according to a certain level
-    - Levels:
-        * Global (country's economy) - if the news is about a state entity or about a company that makes up a significant share of GDP (or something similar)
-        * Local (industry) - if the news is about the industry or about a major player within the industry, the influence of which can greatly affect the industry
-        * Spot (company) - if the news is about a specific company
-    - Financial indicators:
-        * Global level: MOEX index, RVI index, RUBUSD rate
-        * Local level: industry index (i.e. MOEXOG, MOEXEU, MOEXTL, etc.)
-        * Spot level: shares of companies according to ticket (i.e. VKCO, SBER, YNDX, etc.)
-    - Output models:
-        * Tags: '+' - positive 'influence', '0' - no 'influence', '-' - negative 'influence'
-* Creating a graph of connections between financial market entities
-* Using GNN methods for: **TBA**
-* Creating a Telegram bot
-* Creating a FastApi service around models and data
-* Creating a Streamlit service that interacts with the API
+**Project description:** Construction of NLP models to analyze the impact of news on financial instruments and construction of graph for analysis of financial entities interconnections
 
-**Work plan:**
-* Data collection
-    - Sources:
-        * Smart Lab
-        * Kommersant
-        * Ria
-        * Interfax
-    - Data store:
-        * DVC (GDrive)
-* List of tasks at the first stage (exploratory data analysis and primary data analysis):
-    - Clean data from “empty” news (for example, there are news where there are only pictures or only a link to an external news)
-    - Get rid of completely duplicate news
-    - Clean the body of the news from uninformative parts (for example, repeated text, external links, etc.)
-    - Look at the distribution of news text lengths relative to the portals where the news were taken and draw conclusions
-    - Study the sections from which our news was taken
-    - Construct a time series, where the x-axis is the date of the news, and the y-axis is the number of news on this date, study the profile of this time series
-    - Get rid of news that was published outside of trading hours
-* List of tasks at the second stage (classic ML + DL):
-    - Extract necessary entities from news
-    - Get rid of duplicate news ("duplicate news" mean news that repeats the meaning of an event in different words on different portals)
-    - Using NLP methods, generate a label for the “impact” of news globally on the economy/locally on the relevant industry/specifically on a specific company
-    - Make an MVP of the service
-* List of tasks at the third stage (DL deep):
-    - Additionally parse the data (since the initial ones were not enough)
-    - Create a graph of connections between financial market entities
-    - Apply some GNN methods
-    - etc. (TBA)
-* List of tasks at the fourth stage (service creation):
-    - Create a Telegram bot, which receives a link to a news item from many “acceptable” portals as an input, and at the output the user receives aggregated information about the news
-    - Make it possible to obtain information about the structure of the graph
-* List of tasks that we want to do, but may not have time:
-    - Expand sources of news (add news portals)
-    - Organize additional training of the model: periodically additionally parse news, put them in the database, write a pipeline for additional training of the model (MLOps) and update the weights and graph structure of the model lying in the back of the Telegram bot
+**Project structure:**
+- Research: repository with the .ipynb files containing the processes of data collection, EDA and modeling experiments
+- Pipeline: repository containing automated process of new data collection, data preprocessing, model training and inferencing
+- Services: repository containing API for interacting with final models for getting predictions, Telegram Bot as users UI and Streamlit as interactive dashboard of EDA of collected data
 
-**Telegram-bot:** [tg-bot](https://t.me/project_news_anal_bot)
+**Project functionality:**
+- [API](http://88.218.62.166:8000/docs)
+    - /db/get_feedback - get all the reviews collected from users in Telegram Bot
+    - /model/predict_by_link - get prediction of impact of news on financial instruments by news' link
+    - /model/predict_by_links_batch - get prediction of impact of news on financial instruments by batch of news' links (.csv file with first row skipped and all the links placed row by row in first collumn must be passed)
+    - /model/predict_by_text - get prediction of impact of news on financial instruments by news' text
+    - /model/predict_by_texts_batch - get prediction of impact of news on financial instruments by batch of news' texts (.csv file with first row skipped and all the texts placed row by row in first collumn must be passed)
+- [Telegram Bot](https://t.me/project_news_anal_bot)
+    - Get information about the service and the project
+    - Disclaimer (some minor details that must be kept in mind)
+    - Get prediction by link or text of the news
+    - Rate the app
+    - Get statistics of the app' rating and the users' comments
+    - Get information about the ticker from MOEX top-100
+    - Get the graph of financial entities
+- Stramlit (TBA)
+    * Interactive dashboard of EDA of collected data
 
-**FastAPI service:** <pufto, but it won’t be pufto>
 
-**Streamlit mini-app:** <pufto, but it won’t be pufto>
+**Docker-compose content description:**
+- Portainer: Container managemer
+- Bot: Telegram Bot
+    - Dockerfile: setting up the environment and starting the app
+- API: API (FastAPI)
+    - Dockerfile: setting up the environment and giving executable status to scripts required for the API start using gunicorn and start of the celery and the flower
+- Redis: Caching and borkerage for celery
+- Postgres: Database for users' ratings and reviews
+- Celery & Flower: Asynchronous queue of tasks and the UI for this
+- Selenium: Parsing of the texts of the news on the news websites
+- Prometheus & Grafana: Services monitoring and better UI for this
+
+**Project assembling instruction:**
+
+1. Clone the repo on your machine
+```
+git clone https://github.com/FlameInBrainSerj/project_news_graph.git
+```
+2. In folders Services/api and Services/bot create .env files from .env.example with the following configuration
+```
+# bot/.env
+
+# Need to be created using BotFather
+BOT_TOKEN=your_bot_token
+
+DB_HOST=db
+DB_PORT=5432
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+
+API_HOST=api
+API_PORT=8000
+```
+```
+# api/.env
+
+DB_HOST=db
+DB_PORT=5432
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+3. Get all the artifacts (models and tokenizers folders) from the [storage](https://disk.yandex.ru/d/sdQmEjHlah6BBg) and place them in Services/api/artifacts folder
+4. Start the docker containers
+```
+docker compose up
+```
+5. Remove the docker containers
+```
+docker compose down
+```

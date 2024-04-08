@@ -28,7 +28,7 @@ repos:
     hooks:
       - id: flake8
         exclude: __init__.py, Research/
-        args: [ "--ignore=W605,F401,E402", "--max-line-length=88", "--max-complexity=26"]
+        args: [ "--ignore=W605,W503,F401,E402", "--max-line-length=88", "--max-complexity=26"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0

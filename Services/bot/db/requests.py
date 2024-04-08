@@ -1,9 +1,8 @@
 from typing import Sequence
 
+from db.models import Reviews
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from db.models import Reviews
 
 
 async def get_user_by_id(session: AsyncSession, user_id: str) -> Reviews | None:
@@ -85,6 +84,7 @@ async def read_feedback_from_db(session: AsyncSession) -> str:
     return average + str(text)
 
 
+# Support function (can be unused)
 async def test_connection(session: AsyncSession) -> int:
     """
     Check connection to DB

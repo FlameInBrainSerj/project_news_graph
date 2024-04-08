@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import pytest
 from aiogram import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED

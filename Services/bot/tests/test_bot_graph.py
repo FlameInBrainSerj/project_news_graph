@@ -8,10 +8,8 @@ from aiogram.methods import AnswerCallbackQuery, SendMessage
 from aiogram.methods.base import TelegramType
 from aiogram.types import CallbackQuery, Chat, Message, Update, User
 from aiogram.utils.markdown import hide_link
-
-
-from utils.text_messages import MSG_DISPLAY_GRAPH
 from tests.mocked_aiogram import MockedBot
+from utils.text_messages import MSG_DISPLAY_GRAPH
 
 user_id = 123456
 
@@ -48,7 +46,8 @@ async def test_about_service_callback(dp: Dispatcher, bot: MockedBot) -> None:
         bot,
         Update(
             callback_query=make_incoming_callback(
-                "display_graph", MSG_DISPLAY_GRAPH.format(link=hide_link(CAT_LINK)),
+                "display_graph",
+                MSG_DISPLAY_GRAPH.format(link=hide_link(CAT_LINK)),
             ),
             update_id=1,
         ),

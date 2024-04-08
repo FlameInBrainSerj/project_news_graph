@@ -13,14 +13,13 @@ from aiogram.types import (
     CallbackQuery,
     Chat,
     Message,
+    ReplyKeyboardRemove,
     Update,
     User,
-    ReplyKeyboardRemove,
 )
+from db.models import Reviews
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from db.models import Reviews
 from tests.mocked_aiogram import MockedBot
 
 asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
@@ -39,7 +38,9 @@ def make_message(user_id: int, text: str) -> Message:
 
 
 def make_incoming_callback(
-    user_id: int, callback_data: str, text: Optional[str],
+    user_id: int,
+    callback_data: str,
+    text: Optional[str],
 ) -> CallbackQuery:
     """
     Генерирует объект CallbackQuery,

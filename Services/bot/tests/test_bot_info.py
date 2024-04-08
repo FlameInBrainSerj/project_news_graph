@@ -7,9 +7,8 @@ from aiogram.enums import ChatType
 from aiogram.methods import AnswerCallbackQuery, SendMessage
 from aiogram.methods.base import TelegramType
 from aiogram.types import CallbackQuery, Chat, Message, Update, User
-
-from utils.text_messages import ABOUT_SERVICE, DISCLAIMER
 from tests.mocked_aiogram import MockedBot
+from utils.text_messages import ABOUT_SERVICE, DISCLAIMER
 
 user_id = 123456
 

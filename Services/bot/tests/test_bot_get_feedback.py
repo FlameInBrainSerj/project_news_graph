@@ -20,10 +20,9 @@ from aiogram.types import (
     Update,
     User,
 )
+from db.models import Reviews
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from db.models import Reviews
 from tests.mocked_aiogram import MockedBot
 
 user_id = 123456
@@ -135,7 +134,9 @@ async def test_write_review(dp: Dispatcher, bot: MockedBot) -> None:
 @pytest.mark.asyncio
 @pytest.mark.parametrize("text_message", ["7", "0", "семь", "a", "-", "\\"])
 async def test_incorrect_score(
-    dp: Dispatcher, bot: MockedBot, text_message: str,
+    dp: Dispatcher,
+    bot: MockedBot,
+    text_message: str,
 ) -> None:
     fsm_context: FSMContext = dp.fsm.get_context(
         bot=bot,
@@ -206,7 +207,10 @@ async def test_feed_score(dp: Dispatcher, bot: MockedBot, text_message: str) -> 
     [["А" * 1001, "5"]],
 )
 async def test_incorrect_feedback(
-    dp: Dispatcher, bot: MockedBot, score: str, text_message: str,
+    dp: Dispatcher,
+    bot: MockedBot,
+    score: str,
+    text_message: str,
 ) -> None:
     fsm_context: FSMContext = dp.fsm.get_context(
         bot=bot,
@@ -217,7 +221,8 @@ async def test_incorrect_feedback(
     await fsm_context.set_state(Feedback.giving_feedback)
     bot.add_result_for(method=SendMessage, ok=True)
     update = await dp.feed_update(
-        bot, Update(message=make_incoming_message(text_message), update_id=1),
+        bot,
+        Update(message=make_incoming_message(text_message), update_id=1),
     )
     assert update is not UNHANDLED
     outgoing_message: TelegramType = bot.get_request()

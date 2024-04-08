@@ -1,7 +1,7 @@
 import os
 import sys
+from collections.abc import AsyncGenerator, Generator
 from pathlib import Path
-from collections.abc import Generator, AsyncGenerator
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import pytest
@@ -10,16 +10,15 @@ from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from alembic.command import downgrade, upgrade
 from alembic.config import Config as AlembicConfig
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    AsyncEngine,
-    async_sessionmaker,
-    create_async_engine,
-)
-
 from config_reader import Settings, config_file
 from handlers import get_routers
 from middlewares import DbSessionMiddleware
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 from tests.mocked_aiogram import MockedBot, MockedSession
 
 db_host = config_file.db_host.get_secret_value()
@@ -88,7 +87,8 @@ def dp(engine: AsyncEngine) -> Dispatcher:
 # А после завершения тестов в модуле откатывает базу к нулевому состоянию (без данных)
 @pytest_asyncio.fixture(scope="module")
 def create(
-    engine: AsyncEngine, alembic_config: AlembicConfig,
+    engine: AsyncEngine,
+    alembic_config: AlembicConfig,
 ) -> Generator[AsyncEngine, None, None]:
     upgrade(alembic_config, "head")
     yield engine
@@ -98,7 +98,8 @@ def create(
 # Фикстура, которая передаёт в тест сессию из "движка"
 @pytest_asyncio.fixture(scope="function")
 async def session(
-    engine: AsyncEngine, create: AsyncEngine,
+    engine: AsyncEngine,
+    create: AsyncEngine,
 ) -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSession(engine) as s:
         yield s

@@ -9,7 +9,9 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
-from utils.database import add_feedback_to_db
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from db.requests import add_feedback_to_db
 from utils.verification_dict import available_scores
 
 router = Router()
@@ -59,7 +61,7 @@ async def write_review(callback: CallbackQuery, state: FSMContext) -> None:
 @router.message(Feedback.scoring, F.text.in_(available_scores))
 async def feed_score(msg: Message, state: FSMContext) -> None:
     """
-    Recieves score. Thanks for score. Changes status to giving feedback.
+    Receives score. Thanks for score. Changes status to giving feedback.
 
     :param msg: thanks for score
     :type msg: Message
@@ -77,7 +79,7 @@ async def feed_score(msg: Message, state: FSMContext) -> None:
 @router.message(Feedback.scoring)
 async def incorrect_score(msg: Message) -> None:
     """
-    Warnes user of incorrect score.
+    Warns user of incorrect score.
 
     :param msg: warning
     :type msg: Message
@@ -90,26 +92,33 @@ async def incorrect_score(msg: Message) -> None:
 
 
 @router.message(Feedback.giving_feedback, F.text.lower().len() <= 1000)
-async def receive_feedback(msg: Message, state: FSMContext) -> None:
+async def receive_feedback(
+    msg: Message,
+    state: FSMContext,
+    session: AsyncSession,
+) -> None:
     """
-    Takes feedback and thanks for it. Clears state of operation.
+    Takes feedback, and thanks for it. Clears state of operation.
 
     :param msg: thanks for feedback
     :type msg: Message
     :param state: state of giving feedback, clears after sending data to database
     :type state: FSMContext
+    :param session: object of database session
+    :type session: AsyncSession
     """
     if msg.text:
         await state.update_data(given_feedback=msg.text.lower())
     await msg.answer(
-        text="Thank you for your feedback, it is very valuable to us!\n\n"
-        "P.S. If you have already given us a feedback earlier, "
-        "only first feedback will be saved",
+        text="Thank you for your feedback, it is very valuable to us!"
+        "P.S. If you have already given us a feedback "
+        "earlier, only first feedback will be saved",
     )
     data = await state.get_data()
     if msg.from_user:
         await add_feedback_to_db(
-            msg.from_user.id,
+            session,
+            str(msg.from_user.id),
             int(data["chosen_score"]),
             data["given_feedback"],
         )

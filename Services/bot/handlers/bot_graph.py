@@ -2,6 +2,7 @@ from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery
 from aiogram.utils.markdown import hide_link
+
 from utils.text_messages import MSG_DISPLAY_GRAPH
 
 router = Router()

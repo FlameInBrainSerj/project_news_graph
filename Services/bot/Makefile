@@ -15,7 +15,7 @@ black:
 	black .
 
 mypy:
-	mypy .
+	mypy . --explicit-package-bases
 
 flake8:
 	flake8 .

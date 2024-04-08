@@ -4,7 +4,8 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from config_reader import config
+
+from config_reader import config_file
 from handlers.model.bot_model_buttons import model_btns
 from utils.text_messages import (
     ERROR_MSG_PAGE_NOT_LOADED,
@@ -19,8 +20,8 @@ from utils.verification_dict import WEBSITES_XPATHS
 router = Router()
 
 # Host and port of API (model)
-api_host = config.api_host.get_secret_value()
-api_port = config.api_port.get_secret_value()
+api_host = config_file.api_host.get_secret_value()
+api_port = config_file.api_port.get_secret_value()
 
 
 class ModelInference(StatesGroup):

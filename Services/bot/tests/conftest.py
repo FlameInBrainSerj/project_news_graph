@@ -10,15 +10,16 @@ from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from alembic.command import downgrade, upgrade
 from alembic.config import Config as AlembicConfig
-from config_reader import Settings, config_file
-from handlers import get_routers
-from middlewares import DbSessionMiddleware
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
+
+from config_reader import Settings, config_file
+from handlers import get_routers
+from middlewares import DbSessionMiddleware
 from tests.mocked_aiogram import MockedBot, MockedSession
 
 db_host = config_file.db_host.get_secret_value()
@@ -28,7 +29,7 @@ user = config_file.postgres_user.get_secret_value()
 password = config_file.postgres_password.get_secret_value()
 
 
-# Фикстура для получения экземпляра фейкового бота
+# Fixture for obtaining fake bot instance
 @pytest.fixture(scope="session")
 def bot() -> MockedBot:
     bot = MockedBot()
@@ -36,13 +37,13 @@ def bot() -> MockedBot:
     return bot
 
 
-# Фикстура, которая получает объект настроек
+# Fixture to get Settings object
 @pytest.fixture(scope="session")
 def settings() -> Settings:
     return config_file
 
 
-# Фикстура, которая создаёт объект конфигурации alembic для применения миграций
+# Fixture creating AlembicConfig for migrations
 @pytest.fixture(scope="session")
 def alembic_config(settings: Settings) -> AlembicConfig:
     project_dir = Path(__file__).parent.parent
@@ -62,7 +63,7 @@ def alembic_config(settings: Settings) -> AlembicConfig:
     return alembic_cfg
 
 
-# Фикстура для получения асинхронного "движка" для работы с СУБД
+# Fixture to get AsyncEngine to work with DB
 @pytest.fixture(scope="session")
 def engine(settings: Settings) -> Generator[AsyncEngine, None, None]:
     engine = create_async_engine(
@@ -72,8 +73,8 @@ def engine(settings: Settings) -> Generator[AsyncEngine, None, None]:
     engine.sync_engine.dispose()
 
 
-# Обновлённая фикстура для получения экземпляра диспетчера aiogram
-# Здесь же надо ещё раз подключить все нужные мидлвари
+# Fixture to get instance of aiogram Dispatcher
+# And add middlewares to Dispatcher
 @pytest.fixture(scope="session")
 def dp(engine: AsyncEngine) -> Dispatcher:
     dispatcher = Dispatcher(storage=MemoryStorage())
@@ -83,8 +84,8 @@ def dp(engine: AsyncEngine) -> Dispatcher:
     return dispatcher
 
 
-# Фикстура, которая в каждом модуле применяет миграции
-# А после завершения тестов в модуле откатывает базу к нулевому состоянию (без данных)
+# Fixture which applies migrations to each module
+# And after completing tests, it rolls back db to zero state
 @pytest_asyncio.fixture(scope="module")
 def create(
     engine: AsyncEngine,
@@ -95,7 +96,7 @@ def create(
     downgrade(alembic_config, "base")
 
 
-# Фикстура, которая передаёт в тест сессию из "движка"
+# Fixture to pass session from engine to test
 @pytest_asyncio.fixture(scope="function")
 async def session(
     engine: AsyncEngine,

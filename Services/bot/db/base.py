@@ -3,9 +3,10 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from config_reader import config_file
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import DeclarativeBase
+
+from config_reader import config_file
 
 db_host = config_file.db_host.get_secret_value()
 db_port = config_file.db_port.get_secret_value()

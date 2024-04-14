@@ -1,59 +1,32 @@
-from datetime import datetime
-
 import pytest
 from aiogram import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED
-from aiogram.enums import ChatType
 from aiogram.methods import SendMessage
 from aiogram.methods.base import TelegramType
-from aiogram.types import (
-    Chat,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-    Update,
-    User,
-)
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
+
 from tests.mocked_aiogram import MockedBot
+from utils.tests_help_functions import make_incoming_message
 
 user_id = 123456
-callback_data = "about_service"
-
-
-def make_incoming_message() -> Message:
-    """
-    Генерирует текстовое сообщение с командой /id от юзера к боту
-    :return: объект Message с текстовой командой /id
-    """
-    return Message(
-        message_id=1,
-        chat=Chat(id=user_id, type=ChatType.PRIVATE),
-        from_user=User(id=user_id, is_bot=False, first_name="User", last_name="User"),
-        date=datetime.now(),
-        text="/start",
-    )
 
 
 @pytest.mark.asyncio
 async def test_start_command(dp: Dispatcher, bot: MockedBot) -> None:
-    # Создание ответного сообщения от Telegram в ответ на команду /start
     bot.add_result_for(method=SendMessage, ok=True)
 
-    # "Отправка" сообщения с командой /start
-    message = make_incoming_message()
+    message = make_incoming_message(user_id=user_id, text="/start")
     update = await dp.feed_update(bot, Update(message=message, update_id=1))
 
-    # Проверка, что сообщение обработано
     assert update is not UNHANDLED
 
-    # Получение отправленного ботом сообщения
     outgoing_message: TelegramType = bot.get_request()
-    # Проверка содержамого: тип, текст, наличие клавиатуры, что внутри клавиатуры
     assert isinstance(outgoing_message, SendMessage)
     assert isinstance(message.from_user, User)
     assert (
         outgoing_message.text == f"Hello, {message.from_user.full_name}, let's start!"
     )
+
     assert outgoing_message.reply_markup is not None
     markup = outgoing_message.reply_markup
     assert isinstance(markup, InlineKeyboardMarkup)

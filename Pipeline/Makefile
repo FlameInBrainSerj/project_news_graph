@@ -1,3 +1,5 @@
+.PHONY: run-pipeline quality-check poetry isort black mypy flake8 run-scrapers run-preprocessing run-model-train run-model-inference
+
 run-pipeline: run-scrapers run-preprocessing run-model-train run-model-inference
 
 quality-check: isort black flake8 mypy

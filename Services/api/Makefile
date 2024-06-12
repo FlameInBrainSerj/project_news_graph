@@ -1,3 +1,5 @@
+.PHONY: quality-check poetry isort black mypy flake8
+
 quality-check: isort black flake8 mypy
 
 poetry:

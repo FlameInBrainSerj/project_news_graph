@@ -1,3 +1,5 @@
+.PHONY: quality-check poetry pre-commit isort black mypy flake8 bot-tests bot-tests-cov bot-tests-cov-report alembic-init alembic-upgrade-head
+
 poetry:
 	pip install poetry
 	poetry install

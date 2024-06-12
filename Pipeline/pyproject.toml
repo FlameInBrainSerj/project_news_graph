@@ -26,6 +26,7 @@ torchtext = "^0.17.1"
 torchvision = "^0.17.1"
 pytorch-lightning = "^2.2.0.post0"
 scikit-learn = "^1.4.1.post1"
+selenium = "^4.21.0"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -21,7 +21,9 @@ flake8:
 	flake8 .
 
 run-scrapers:
+	docker compose up -d
 	python .\scrapers\scrapers_main.py
+	docker compose down
 
 run-preprocessing:
 	python .\preprocessing\preprocessing_main.py

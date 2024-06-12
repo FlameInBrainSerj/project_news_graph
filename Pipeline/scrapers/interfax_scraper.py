@@ -24,7 +24,7 @@ def parse_links_interfax(
     :return list(set(lst_links)): list of unique news
     """
     lst_links = []
-    driver = webdriver.Chrome(options=webdriver_options)
+    driver = webdriver.Remote("http://localhost:4444/wd/hub", options=webdriver_options)
 
     for _, date in enumerate(lst_dates):
         driver.get(f"https://www.interfax.ru/business/news/{date}")
@@ -68,7 +68,7 @@ def parse_interfax_news_on_list_of_links_and_save(
     section_lst = []
     key_words_lst = []
 
-    driver = webdriver.Chrome(options=webdriver_options)
+    driver = webdriver.Remote("http://localhost:4444/wd/hub", options=webdriver_options)
 
     for i in tqdm(range(len(lst_links)), desc="Parse Interfax links"):
 
@@ -77,7 +77,10 @@ def parse_interfax_news_on_list_of_links_and_save(
             driver.close()
             driver.quit()
 
-            driver = webdriver.Chrome(options=webdriver_options)
+            driver = webdriver.Remote(
+                "http://localhost:4444/wd/hub",
+                options=webdriver_options,
+            )
 
         try:
             driver.get(lst_links[i])

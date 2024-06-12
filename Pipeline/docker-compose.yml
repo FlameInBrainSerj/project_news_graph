@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    restart: unless-stopped
+    ports:
+      - 4444:4444
+    environment:
+      - SE_NODE_SESSION_TIMEOUT=100000000
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "https://www.google.com/" ]
+      interval: 5s
+      retries: 3

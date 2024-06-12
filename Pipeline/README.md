@@ -20,7 +20,7 @@ All the scripts are working with the configuration files in configs folder. If o
 
 **Makefile commands:**
 ```
-# Running data scrapping
+# Running data scrapping (and selenium in Docker)
 make run-scrapers
 
 # Running data preprocessing

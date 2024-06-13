@@ -15,11 +15,10 @@
 
 **Project functionality:**
 - [API](http://185.209.31.172:8189/docs)
-    - /db/get_feedback - get all the reviews collected from users in Telegram Bot
     - /model/predict_by_link - get prediction of impact of news on financial instruments by news' link
-    - /model/predict_by_links_batch - get prediction of impact of news on financial instruments by batch of news' links (.csv file with first row skipped and all the links placed row by row in first collumn must be passed)
+    - /model/predict_by_links_batch - get prediction of impact of news on financial instruments by batch of news' links (.csv file with first row skipped and all the links placed row by row in first column must be passed)
     - /model/predict_by_text - get prediction of impact of news on financial instruments by news' text
-    - /model/predict_by_texts_batch - get prediction of impact of news on financial instruments by batch of news' texts (.csv file with first row skipped and all the texts placed row by row in first collumn must be passed)
+    - /model/predict_by_texts_batch - get prediction of impact of news on financial instruments by batch of news' texts (.csv file with first row skipped and all the texts placed row by row in first column must be passed)
 - [Telegram Bot](https://t.me/project_news_anal_bot)
     - Get information about the service and the project
     - Disclaimer (some minor details that must be kept in mind)
@@ -28,18 +27,18 @@
     - Get statistics of the app' rating and the users' comments
     - Get information about the ticker from MOEX top-100
     - Get the graph of financial entities
-- Stramlit (TBA)
+- Streamlit (TBA)
     * Interactive dashboard of EDA of collected data
 
 
 **Docker-compose content description:**
-- Portainer: Container managemer
+- Portainer: Container manager
 - Bot: Telegram Bot
     - Dockerfile: setting up the environment and starting the app
-- API: API (FastAPI)
+- API: FastAPI
     - Dockerfile: setting up the environment and giving executable status to scripts required for the API start using gunicorn and start of the celery and the flower
 - Nginx: Proxy for API
-- Redis: Caching and borkerage for celery
+- Redis: Caching and brokerage for celery
 - Postgres: Database for users' ratings and reviews
 - Celery & Flower: Asynchronous queue of tasks and the UI for this
 - Selenium: Parsing of the texts of the news on the news websites
@@ -55,7 +54,7 @@ git clone https://github.com/FlameInBrainSerj/project_news_graph.git
 ```
 # bot/.env
 
-# Need to be created using BotFather
+# Needs to be created using BotFather
 BOT_TOKEN=your_bot_token
 
 DB_HOST=db
@@ -69,12 +68,6 @@ API_PORT=8000
 ```
 ```
 # api/.env
-
-DB_HOST=db
-DB_PORT=5432
-POSTGRES_DB=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
 
 REDIS_HOST=redis
 REDIS_PORT=6379

@@ -1,5 +1,4 @@
 from config import REDIS_HOST, REDIS_PORT
-from database.router import router as db_router
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -12,9 +11,6 @@ app = FastAPI(title="API for DL model: predicting influence of news on asset")
 # Prometheus stuff
 app.add_middleware(PrometheusMiddleware)
 app.add_route("/metrics", handle_metrics)
-
-# Router for connection to db
-app.include_router(db_router)
 
 # Router for models' inference
 app.include_router(models_router)

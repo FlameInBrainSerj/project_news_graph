@@ -52,6 +52,21 @@ redis = ["redis[hiredis] (>=5.0.1,<5.1.0)"]
 test = ["aresponses (>=2.1.6,<2.2.0)", "pycryptodomex (>=3.19.0,<3.20.0)", "pytest (>=7.4.2,<7.5.0)", "pytest-aiohttp (>=1.0.5,<1.1.0)", "pytest-asyncio (>=0.21.1,<0.22.0)", "pytest-cov (>=4.1.0,<4.2.0)", "pytest-html (>=4.0.2,<4.1.0)", "pytest-lazy-fixture (>=0.6.3,<0.7.0)", "pytest-mock (>=3.12.0,<3.13.0)", "pytest-mypy (>=0.10.3,<0.11.0)", "pytz (>=2023.3,<2024.0)"]
 
 [[package]]
+name = "aiogram-prometheus"
+version = "0.2.3"
+description = "Aiogram`s exporter for Prometheus"
+optional = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "aiogram_prometheus-0.2.3-py3-none-any.whl", hash = "sha256:812c42c0952a888f40307dc05b78aa304d9187896c5c95c53da3e860c0b8e82f"},
+    {file = "aiogram_prometheus-0.2.3.tar.gz", hash = "sha256:b559c087b883c32d6b8f8a9365eb4d139680e4dbf0cf3c37dbd64c3774944877"},
+]
+
+[package.dependencies]
+aiogram = ">=3"
+prometheus-client = "<1"
+
+[[package]]
 name = "aiohttp"
 version = "3.9.3"
 description = "Async http client/server framework (asyncio)"
@@ -2465,6 +2480,20 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
+name = "prometheus-client"
+version = "0.20.0"
+description = "Python client for the Prometheus monitoring system."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "prometheus_client-0.20.0-py3-none-any.whl", hash = "sha256:cde524a85bce83ca359cc837f28b8c0db5cac7aa653a588fd7e84ba061c329e7"},
+    {file = "prometheus_client-0.20.0.tar.gz", hash = "sha256:287629d00b147a32dcb2be0b9df905da599b2d82f80377083ec8463309a4bb89"},
+]
+
+[package.extras]
+twisted = ["twisted"]
+
+[[package]]
 name = "protobuf"
 version = "4.23.4"
 description = ""
@@ -4280,4 +4309,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "9b09d4db97cfbe5990c0dc91ad3e5921b98cf5ba8cd4dd9ea258a0646197f2d3"
+content-hash = "7e62b687e6eba1587ebcea4310a090d437cf32ca06352178194a2a45a4a0c1e9"

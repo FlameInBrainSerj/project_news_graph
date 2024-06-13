@@ -2,6 +2,11 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram_prometheus import (
+    BotAiogramCollector,
+    DispatcherAiogramCollector,
+    PushGatewayClient,
+)
 from config_reader import config_file
 from db.base import engine
 from handlers import (
@@ -36,6 +41,18 @@ async def main() -> None:
         bot_display_ticker.router,
         bot_graph.router,
     )
+
+    # Prometheus
+    # Bot info metrics
+    BotAiogramCollector().add_bot(bot)
+    # Metric base info
+    DispatcherAiogramCollector(dp)
+    push_gateway_client = PushGatewayClient(
+        "http://pushgateway:9091/",
+        "tg_bot_exporter",
+    )
+    # Push to Prometheus interval
+    push_gateway_client.schedule_push(5)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

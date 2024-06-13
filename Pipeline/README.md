@@ -3,16 +3,14 @@
 **Pipeline stages:**
 - **Data scraping:**
     - Sources: Ria, Smart-Lab, Interfax, Kommersant
-    - Automated new data parsing with DAG: **TBA**
 - **Data preprocessing:**
     - Soft preprocessing: removing duplicated news, removing links and garbage in the texts, removing short news, normalizing the datetimes of the news
     - Texts normalization: lowercasing the text, removing some excessive syntax, deleting stopwords, lemmatizing the texts
-    - NER: financial named entities recognition
+      - NER: financial named entities recognition
     - Trade data injection: injecting trading data in correspondence with named entities and datetime of the news
     - Creation of new datasets: creating three separate datasets (companies, industries, global)
 - **Models' train and inference:**
     - Main framework: Pytorch Lightning
-    - Experiments logging: **TBA**
 
 **Scripts configuration:**
 

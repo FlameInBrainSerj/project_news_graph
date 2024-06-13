@@ -26,11 +26,9 @@ services:
   api:
     build:
       context: api/
-    container_name: api_model
+    container_name: api
     restart: unless-stopped
     command: ["/fastapi_app/scripts/app.sh"]
-    ports:
-      - 8000:8000
     depends_on:
       selenium:
         condition: service_healthy
@@ -38,6 +36,19 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - backend
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "8189:80"
+    volumes:
+      - ./api/frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      api:
+        condition: service_started
     networks:
       - backend
 

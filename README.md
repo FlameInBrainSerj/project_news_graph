@@ -14,7 +14,7 @@
 - Services: repository containing API for interacting with final models for getting predictions, Telegram Bot as users UI and Streamlit as interactive dashboard of EDA of collected data
 
 **Project functionality:**
-- [API](http://88.218.62.166:8000/docs)
+- [API](http://88.218.62.166:8189/docs)
     - /db/get_feedback - get all the reviews collected from users in Telegram Bot
     - /model/predict_by_link - get prediction of impact of news on financial instruments by news' link
     - /model/predict_by_links_batch - get prediction of impact of news on financial instruments by batch of news' links (.csv file with first row skipped and all the links placed row by row in first collumn must be passed)
@@ -38,6 +38,7 @@
     - Dockerfile: setting up the environment and starting the app
 - API: API (FastAPI)
     - Dockerfile: setting up the environment and giving executable status to scripts required for the API start using gunicorn and start of the celery and the flower
+- Nginx: Proxy for API
 - Redis: Caching and borkerage for celery
 - Postgres: Database for users' ratings and reviews
 - Celery & Flower: Asynchronous queue of tasks and the UI for this

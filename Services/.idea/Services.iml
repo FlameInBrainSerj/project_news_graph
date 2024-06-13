@@ -6,7 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/api/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/bot/.venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.10 (Services) (2)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (Services)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

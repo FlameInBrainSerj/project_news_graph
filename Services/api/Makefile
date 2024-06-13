@@ -1,4 +1,4 @@
-.PHONY: quality-check poetry isort black mypy flake8
+.PHONY: quality-check poetry isort black mypy flake8 api-tests api-tests-cov api-tests-cov-report
 
 quality-check: isort black flake8 mypy
 
@@ -17,3 +17,11 @@ mypy:
 
 flake8:
 	flake8 .
+
+# Tests
+api-tests:
+	python -m pytest tests
+api-tests-cov:
+	coverage run -m pytest tests
+api-tests-cov-report:
+	pytest --cov --cov-report=html:coverage_report

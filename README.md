@@ -14,7 +14,7 @@
 - Services: repository containing API for interacting with final models for getting predictions, Telegram Bot as users UI and Streamlit as interactive dashboard of EDA of collected data
 
 **Project functionality:**
-- [API](http://88.218.62.166:8189/docs)
+- [API](http://185.209.31.172:8189/docs)
     - /db/get_feedback - get all the reviews collected from users in Telegram Bot
     - /model/predict_by_link - get prediction of impact of news on financial instruments by news' link
     - /model/predict_by_links_batch - get prediction of impact of news on financial instruments by batch of news' links (.csv file with first row skipped and all the links placed row by row in first collumn must be passed)

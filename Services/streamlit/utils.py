@@ -63,6 +63,9 @@ def plot_news(source: str, news_by_date: list) -> go.Figure:
         xaxis=dict(rangeselector=dict(),
                    rangeslider=dict(visible=True),
                    type="date"),
+        yaxis2=dict(showgrid=False,
+                    zeroline=False,
+                    visible=False)
     )
     return fig
 

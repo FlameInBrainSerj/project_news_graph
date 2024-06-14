@@ -454,7 +454,11 @@ with tab2:
         st.write("Let's explore main statistics.")
         st.write(
             df_comp.drop(["datetime",
-                          "key_words"], axis=1).describe(include="all")
+                          "key_words"], axis=1).describe()
+        )
+        st.write(
+            df_comp.drop(["datetime",
+                          "key_words"], axis=1).describe(include="object")
         )
     with st.container():
         st.header("Website")
@@ -514,7 +518,11 @@ with tab3:
         st.write("Let's explore main statistics.")
         st.write(
             df_industry.drop(["datetime",
-                              "key_words"], axis=1).describe(include="all")
+                              "key_words"], axis=1).describe()
+        )
+        st.write(
+            df_industry.drop(["datetime",
+                              "key_words"], axis=1).describe(include="object")
         )
     with st.container():
         st.header("Website")
@@ -588,7 +596,11 @@ with tab4:
         st.write("Let's explore main statistics.")
         st.write(
             df_glob.drop(["datetime",
-                          "key_words"], axis=1).describe(include="all")
+                          "key_words"], axis=1).describe()
+        )
+        st.write(
+            df_glob.drop(["datetime",
+                          "key_words"], axis=1).describe(include="object")
         )
         st.write("Don't worry, we will show datetime and key_words further.")
     with st.container():

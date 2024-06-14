@@ -640,7 +640,7 @@ with tab4:
         with st.expander("See Interim Conclusions"):
             st.markdown(text_messages.TAB4_TRADING_USD)
 with tab5:
-    embeddings = np.load("Data/embeddings.npy")
+    embeddings = np.load("Services/streamlit/Data/embeddings.npy")
     st.header("Graph of companies")
     entities = sorted(df_comp["company"].unique())
     edges = []

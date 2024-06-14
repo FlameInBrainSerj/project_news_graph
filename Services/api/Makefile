@@ -20,8 +20,8 @@ flake8:
 
 # Tests
 api-tests:
-	python -m pytest tests
+	python -m pytest --disable-warnings tests
 api-tests-cov:
-	coverage run -m pytest tests
+	coverage run -m pytest --disable-warnings tests
 api-tests-cov-report:
-	pytest --cov --cov-report=html:coverage_report
+	python -m pytest --cov --cov-report=html:coverage_report --disable-warnings tests

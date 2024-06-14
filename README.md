@@ -71,6 +71,8 @@ API_PORT=8000
 
 REDIS_HOST=redis
 REDIS_PORT=6379
+
+SELENIUM_HOST=selenium
 ```
 3. Get all the artifacts (models and tokenizers folders) from the [storage](https://disk.yandex.ru/d/sdQmEjHlah6BBg) and place them in Services/api/artifacts folder
 4. Start the docker containers

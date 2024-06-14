@@ -1,4 +1,5 @@
 import pandas as pd
+from config import SELENIUM_HOST
 from fastapi import HTTPException
 from models_functionality.utils import WEBSITES_XPATHS
 from selenium import webdriver
@@ -25,7 +26,10 @@ options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--headless=new")
 
 # Initialize webdriver
-driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
+driver = webdriver.Remote(
+    command_executor=f"http://{SELENIUM_HOST}:4444/wd/hub",
+    options=options,
+)
 
 
 def parse_page(

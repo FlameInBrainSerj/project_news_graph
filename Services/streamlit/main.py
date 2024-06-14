@@ -7,8 +7,8 @@ from scipy.spatial import ConvexHull
 from sklearn.metrics.pairwise import cosine_similarity
 
 import streamlit as st
-import Services.streamlit.text_messages as text_messages
-from Services.streamlit.utils import (
+import text_messages
+from utils import (
     create_date_series,
     create_news_by_date,
     node_classes_new,

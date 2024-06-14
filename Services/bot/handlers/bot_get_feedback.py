@@ -9,9 +9,8 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from db.requests import add_feedback_to_db
+from sqlalchemy.ext.asyncio import AsyncSession
 from utils.verification_dict import available_scores
 
 router = Router()
@@ -110,7 +109,7 @@ async def receive_feedback(
     if msg.text:
         await state.update_data(given_feedback=msg.text.lower())
     await msg.answer(
-        text="Thank you for your feedback, it is very valuable to us!"
+        text="Thank you for your feedback, it is very valuable to us!\n"
         "P.S. If you have already given us a feedback "
         "earlier, only first feedback will be saved",
     )

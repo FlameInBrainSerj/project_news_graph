@@ -7,8 +7,8 @@ from scipy.spatial import ConvexHull
 from sklearn.metrics.pairwise import cosine_similarity
 
 import streamlit as st
-import text_messages
-from utils import (
+import Services.streamlit.text_messages as text_messages
+from Services.streamlit.utils import (
     create_date_series,
     create_news_by_date,
     node_classes_new,
@@ -18,10 +18,10 @@ from utils import (
 
 s, weekend, working_days = create_date_series()
 
-df_eda = st.cache_data(pd.read_parquet)("Data/data_eda_graphs.parquet")
-df_comp = st.cache_data(pd.read_parquet)("Data/data_comp_graphs.parquet")
-df_industry = st.cache_data(pd.read_parquet)("Data/data_ind_graphs.parquet")
-df_glob = st.cache_data(pd.read_parquet)("Data/data_glob_graphs.parquet")
+df_eda = st.cache_data(pd.read_parquet)("Services/streamlit/Data/data_eda_graphs.parquet")
+df_comp = st.cache_data(pd.read_parquet)("Services/streamlit/Data/data_comp_graphs.parquet")
+df_industry = st.cache_data(pd.read_parquet)("Services/streamlit/Data/data_ind_graphs.parquet")
+df_glob = st.cache_data(pd.read_parquet)("Services/streamlit/Data/data_glob_graphs.parquet")
 
 
 @st.cache_data

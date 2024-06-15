@@ -27,7 +27,7 @@
     - Get statistics of the app' rating and the users' comments
     - Get information about the ticker from MOEX top-100
     - Get the graph of financial entities
-- Streamlit (TBA)
+- [Streamlit](https://project-news-analysis-eda.streamlit.app/)
     * Interactive dashboard of EDA of collected data
 
 

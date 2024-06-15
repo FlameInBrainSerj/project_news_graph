@@ -252,7 +252,7 @@ def build_graph(edges, title, k=9):
             go.Scatter(
                 x=edge_x[i * 3: (i + 1) * 3],
                 y=edge_y[i * 3: (i + 1) * 3],
-                line=dict(width=2, color=f"rgba(0,0,255,{norm_weights[i]})"),
+                line=dict(width=2, color=f"rgba(238,0,0,{norm_weights[i]})"),
                 hoverinfo="none",
                 mode="lines",
                 showlegend=False,
@@ -341,7 +341,7 @@ def build_graph(edges, title, k=9):
             size=10,
             color=[weights.min(), weights.max()],
             colorscale=[
-                f"rgba(0,0,255,{sorted(norm_weights)[i]})"
+                f"rgba(238,0,0,{sorted(norm_weights)[i]})"
                 for i in range(len(edge_x) // 3)
             ],
             colorbar=dict(

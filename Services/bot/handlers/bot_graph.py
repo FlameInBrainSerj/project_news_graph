@@ -1,13 +1,11 @@
 from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery
-from aiogram.utils.markdown import hide_link
-
 from utils.text_messages import MSG_DISPLAY_GRAPH
 
 router = Router()
 
-CAT_LINK = "https://cataas.com/cat"
+streamlit_link = "https://project-news-analysis-eda.streamlit.app/"
 
 
 @router.callback_query(F.data == "display_graph")
@@ -21,6 +19,6 @@ async def msg_display_graph(callback: CallbackQuery) -> None:
     if callback.message:
         await callback.answer(cache_time=1)
         await callback.message.answer(
-            MSG_DISPLAY_GRAPH.format(link=hide_link(CAT_LINK)),
-            parse_mode=ParseMode.HTML,
+            MSG_DISPLAY_GRAPH.format(link=streamlit_link),
+            parse_mode=ParseMode.MARKDOWN_V2,
         )

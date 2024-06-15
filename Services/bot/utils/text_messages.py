@@ -2,10 +2,15 @@ ABOUT_SERVICE = (
     "This service was created as a part of the project: "
     "'Building the news graph and services connected to it'\n\n"
     "This project is dedicated to analysis of news using NLP and graph methods\n\n"
-    "What features already realised \(for now\):\n"
+    "What features already realised:\n"
     "    \- Make prediction, how certain news can influence financial instrument\n"
     "    \- Display information about the certain ticker\n"
     "    \- Add graph of connections between financial entities\n\n"
+    "Other services associated with the project:\n"
+    "    \- [API](http://185.209.31.172:8189/docs): API for getting inference "
+    "from models\n"
+    "    \- [Streamlit](https://project-news-analysis-eda.streamlit.app/): Dashboard"
+    " of results of EDA and the graph of connections between financial entities\n\n"
     "Creators: @FlameInBrain, @maxodum\n\n"
     "Detailed description of the project and steps completed can be found"
     "can be found in the GitHub repository: "
@@ -88,11 +93,7 @@ Volume — amount of trades in the previous trading hour
 Begin — the start of the previous trading hour
 End — the end of the previous trading hour\n\n"""
 
-MSG_DISPLAY_GRAPH = (
-    "Sorry, my creators haven't completed me yet 🫣, but "
-    "instead I can send you an image of a pretty cat 🤗\n\n"
-    "{link}MEOW 🐱"
-)
+MSG_DISPLAY_GRAPH = "Graph can be found by the following link: " "[Graph]({link})"
 
 
 MSG_DISPLAY_TICKER = (

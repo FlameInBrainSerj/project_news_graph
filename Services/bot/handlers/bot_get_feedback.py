@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -13,6 +15,7 @@ from db.requests import add_feedback_to_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.verification_dict import available_scores
 
+logger = logging.getLogger(__name__)
 router = Router()
 
 
@@ -48,6 +51,8 @@ async def write_review(callback: CallbackQuery, state: FSMContext) -> None:
     :type callback: CallbackQuery
     :param state: current state of operation, changes to scoring
     :type state: FSMContext"""
+    logger.info("The 'leave_feedback' was triggered")
+
     if callback.message:
         await callback.answer(cache_time=1)
         await callback.message.answer(

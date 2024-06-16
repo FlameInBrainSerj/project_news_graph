@@ -15,12 +15,16 @@ services:
     build: bot/
     container_name: tg_bot
     restart: unless-stopped
+    volumes:
+      - ./efk-logs-bot:/bot_app/logs
     depends_on:
       db:
         condition: service_healthy
       api:
         condition: service_started
       pushgateway:
+        condition: service_started
+      elasticsearch:
         condition: service_started
     networks:
       - backend
@@ -31,12 +35,16 @@ services:
     container_name: api
     restart: unless-stopped
     command: ["/fastapi_app/scripts/app.sh"]
+    volumes:
+      - ./efk-logs-api:/fastapi_app/src/logs
     depends_on:
       selenium:
         condition: service_healthy
       redis:
         condition: service_healthy
       celery:
+        condition: service_started
+      elasticsearch:
         condition: service_started
     networks:
       - backend
@@ -45,7 +53,7 @@ services:
     image: nginx
     container_name: nginx
     ports:
-      - "8189:80"
+      - 8189:80
     volumes:
       - ./api/frontend/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
@@ -167,6 +175,37 @@ services:
       prometheus:
         condition: service_started
     user: "0"
+    networks:
+      - backend
+
+  elasticsearch:
+    image: elastic/elasticsearch:7.15.0
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+    networks:
+      - backend
+
+  kibana:
+    image: elastic/kibana:7.15.0
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend
+
+  filebeat:
+    build:
+      context: ./filebeat
+    container_name: filebeat
+    volumes:
+      - ./efk-logs-api:/fastapi_app/src/logs
+      - ./efk-logs-bot:/bot_app/logs
+    depends_on:
+      - elasticsearch
+      - kibana
     networks:
       - backend
 

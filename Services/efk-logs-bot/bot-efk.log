@@ -1,0 +1,10 @@
+2024-06-16 09:48:11,756 - __main__ - INFO - --- Start up Bot ---
+2024-06-16 09:48:11,981 - aiogram.dispatcher - INFO - Start polling
+2024-06-16 09:48:12,051 - aiogram.dispatcher - INFO - Run polling for bot @DevProjectNewsAnalBot id=6804181378 - 'ProjectNewsAnalBotDev'
+2024-06-16 09:50:56,486 - handlers.bot_info - INFO - The 'about_service' was triggered
+2024-06-16 09:50:56,878 - aiogram.event - INFO - Update id=865387914 is handled. Duration 393 ms by bot id=6804181378
+2024-06-16 09:50:58,426 - handlers.bot_info - INFO - The 'disclaimer' was triggered
+2024-06-16 09:50:58,579 - aiogram.event - INFO - Update id=865387915 is handled. Duration 154 ms by bot id=6804181378
+2024-06-16 09:51:01,157 - handlers.bot_display_ticker - INFO - The 'display_ticker' was triggered
+2024-06-16 09:51:01,346 - aiogram.event - INFO - Update id=865387916 is handled. Duration 191 ms by bot id=6804181378
+2024-06-16 09:51:06,185 - aiogram.event - INFO - Update id=865387917 is handled. Duration 3326 ms by bot id=6804181378

@@ -1,10 +1,14 @@
 import json
+import logging
 from io import BytesIO
 
 import pandas as pd
 from fastapi import APIRouter, Query, Response, UploadFile
 from models_functionality.inference import predict_texts_and_return_dict
 from models_functionality.scrapers import parse_links
+
+# Get logger for module
+routers_logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/model", tags=["Model"])
 
@@ -20,6 +24,8 @@ async def predict_by_link(url: str = Query(min_length=1)) -> Response:
     :rtype: Response
     :return json: .json file with prediction to the news
     """
+    routers_logger.info("The predict_by_link handler was pulled")
+
     # Read link passed
     links = pd.DataFrame({"Url": url}, index=[0])
     # Parse link and get text
@@ -41,6 +47,8 @@ async def predict_by_links_batch(file: UploadFile) -> Response:
     :rtype: Response
     :return json: .json file with predictions to the news
     """
+    routers_logger.info("The predict_by_links_batch handler was pulled")
+
     # Read .csv file with links
     links = pd.read_csv(BytesIO(file.file.read()))
     # Parse links and get texts
@@ -62,6 +70,8 @@ async def predict_by_text(text: str = Query(min_length=1)) -> Response:
     :rtype: Response
     :return json: .json file with prediction to the news
     """
+    routers_logger.info("The predict_by_text handler was pulled")
+
     # Read text passed
     texts = pd.DataFrame({"Text": text}, index=[0])
     # Predict and transform to json
@@ -84,6 +94,8 @@ async def predict_by_texts_batch(file: UploadFile) -> Response:
     :rtype: Response
     :return json: .json file with predictions to the news
     """
+    routers_logger.info("The predict_by_texts_batch handler was pulled")
+
     # Read .csv file with texts
     texts = pd.read_csv(BytesIO(file.file.read()))
     # Predict and transform to json

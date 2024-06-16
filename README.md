@@ -42,7 +42,8 @@
 - Postgres: Database for users' ratings and reviews
 - Celery & Flower: Asynchronous queue of tasks and the UI for this
 - Selenium: Parsing of the texts of the news on the news websites
-- Prometheus & Grafana: Services monitoring and better UI for this
+- Prometheus & Grafana: Services monitoring
+- Filebeat & Elasticsearch & Kibana: Services logging
 
 **Project assembling instruction:**
 

@@ -18,14 +18,20 @@ from handlers import (
     bot_start,
 )
 from handlers.model import bot_model_main
+from logging_setup import LoggerSetup
 from middlewares import DbSessionMiddleware
 from sqlalchemy.ext.asyncio import async_sessionmaker
+
+logger_setup = LoggerSetup()
+main_logger = logging.getLogger(__name__)
 
 
 async def main() -> None:
     """
     Main bot function.
     """
+
+    main_logger.info("--- Start up Bot ---")
 
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
     bot = Bot(token=config_file.bot_token.get_secret_value())
@@ -59,5 +65,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     asyncio.run(main())

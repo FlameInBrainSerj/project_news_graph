@@ -1,10 +1,11 @@
+import logging
+
 import requests
 from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-
 from config_reader import config_file
 from handlers.model.bot_model_buttons import model_btns
 from utils.text_messages import (
@@ -17,6 +18,7 @@ from utils.text_messages import (
 )
 from utils.verification_dict import WEBSITES_XPATHS
 
+logger = logging.getLogger(__name__)
 router = Router()
 
 # Host and port of API (model)
@@ -41,6 +43,8 @@ async def msg_model(callback: CallbackQuery) -> None:
     :param callback: warning
     :type callback: CallbackQuery
     """
+    logger.info("The 'make_prediction' was triggered")
+
     if callback.message:
         await callback.answer(cache_time=1)
         await callback.message.answer(
@@ -57,6 +61,8 @@ async def msg_model_info(callback: CallbackQuery) -> None:
     :param callback: display model info
     :type callback: CallbackQuery
     """
+    logger.info("The 'model_info' was triggered")
+
     if callback.message:
         await callback.answer(cache_time=1)
         await callback.message.answer(MODEL_INFO, parse_mode=ParseMode.MARKDOWN_V2)
@@ -72,6 +78,8 @@ async def msg_insert_link(callback: CallbackQuery, state: FSMContext) -> None:
     :param state: state of operation, changes to pass_link
     :type state: FSMContext
     """
+    logger.info("The 'insert_link' was triggered")
+
     if callback.message:
         await callback.answer(cache_time=1)
         await callback.message.answer(
@@ -130,6 +138,8 @@ async def msg_insert_text(callback: CallbackQuery, state: FSMContext) -> None:
     :param state: state of operation, changes to pass_text
     :type state: FSMContext
     """
+    logger.info("The 'insert_text' was triggered")
+
     if callback.message:
         await callback.answer(cache_time=1)
         await callback.message.answer(

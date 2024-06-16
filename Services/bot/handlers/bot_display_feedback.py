@@ -1,9 +1,11 @@
+import logging
+
 from aiogram import F, Router
 from aiogram.types import CallbackQuery, ReplyKeyboardRemove
+from db.requests import read_feedback_from_db
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.requests import read_feedback_from_db
-
+logger = logging.getLogger(__name__)
 router = Router()
 
 
@@ -17,6 +19,8 @@ async def show_feedback(callback: CallbackQuery, session: AsyncSession) -> None:
     :param session: database session
     :type session: AsyncSession
     """
+    logger.info("The 'show_feedback' was triggered")
+
     if callback.message:
         text = await read_feedback_from_db(session)
         await callback.answer(cache_time=1)

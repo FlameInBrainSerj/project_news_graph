@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 from config import SELENIUM_HOST
 from fastapi import HTTPException
@@ -5,6 +7,9 @@ from models_functionality.utils import WEBSITES_XPATHS
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+
+# Get logger for module
+links_logger = logging.getLogger(__name__)
 
 # Options for webdriver
 options = Options()
@@ -47,6 +52,8 @@ def parse_page(
     :rtype: str
     :return body: body of the news
     """
+    links_logger.info(f"Parse: {url}")
+
     try:
         driver.get(url)
         body = " ".join(

@@ -1,8 +1,11 @@
+import logging
+
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+logger = logging.getLogger(__name__)
 router = Router()
 
 
@@ -61,6 +64,8 @@ async def cmd_start(msg: Message) -> None:
     :param msg: message of the greetings
     :type msg: Message
     """
+    logger.info("The /start was triggered")
+
     if msg.from_user:
         await msg.answer(
             f"Hello, {msg.from_user.full_name}, let's start!",

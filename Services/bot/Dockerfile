@@ -73,7 +73,7 @@ RUN apt-get update && \
 
 # `production` image used for runtime
 FROM python-base as production
-WORKDIR /app
+WORKDIR /bot_app
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY . .
-CMD python /app/main.py
+CMD python /bot_app/main.py

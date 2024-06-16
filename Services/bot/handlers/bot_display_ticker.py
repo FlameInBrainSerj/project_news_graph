@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 import pytz
 import requests
@@ -6,7 +7,6 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
-
 from utils.display_ticker_vars import COMPANIES_API_STRING, TICKERS
 from utils.text_messages import (
     MSG_CHOOSE_TICKER,
@@ -14,6 +14,7 @@ from utils.text_messages import (
     TICKER_DESCRIPTION,
 )
 
+logger = logging.getLogger(__name__)
 router = Router()
 
 
@@ -62,6 +63,8 @@ async def msg_get_ticket(callback: CallbackQuery, state: FSMContext) -> None:
     :param state: state of operation, changes to choosing ticker
     :type state: FSMContext
     """
+    logger.info("The 'display_ticker' was triggered")
+
     if callback.message:
         await callback.answer(cache_time=1)
         await callback.message.answer(

@@ -1,0 +1,15 @@
+2024-06-16 09:12:56,037 - main - INFO - --- Start up App ---
+2024-06-16 09:13:17,320 - models_functionality.router - INFO - The predict_by_link handler was pulled
+2024-06-16 09:13:17,325 - models_functionality.scrapers - INFO - Parse: https://ria.ru/20240616/ukraina-1953205208.html
+2024-06-16 09:13:31,866 - models_functionality.router - INFO - The predict_by_text handler was pulled
+2024-06-16 09:14:07,694 - models_functionality.router - INFO - The predict_by_links_batch handler was pulled
+2024-06-16 09:14:07,702 - models_functionality.scrapers - INFO - Parse: https://ria.ru/20240316/gazprom_eksport-1933514645.html
+2024-06-16 09:14:11,204 - models_functionality.scrapers - INFO - Parse: https://ria.ru/20240316/torgovlya-1933466940.html
+2024-06-16 09:14:38,991 - models_functionality.router - INFO - The predict_by_texts_batch handler was pulled
+2024-06-16 09:20:32,944 - main - INFO - --- Start up App ---
+2024-06-16 09:35:19,453 - main - INFO - --- Start up App ---
+2024-06-16 09:36:17,207 - models_functionality.router - INFO - The predict_by_link handler was pulled
+2024-06-16 09:36:17,226 - models_functionality.scrapers - INFO - Parse: https://ria.ru/20240616/ukraina-1953205208.html
+2024-06-16 09:36:27,977 - models_functionality.router - INFO - The predict_by_text handler was pulled
+2024-06-16 09:40:38,941 - main - INFO - --- Start up App ---
+2024-06-16 09:48:35,345 - main - INFO - --- Start up App ---

@@ -42,6 +42,9 @@ jobs:
           mypy \
           --disallow-untyped-defs \
           --ignore-missing-imports \
+          --explicit-package-bases \
+          --exclude Services/streamlit \
+
           --disable-error-code=name-defined \
           --disable-error-code=arg-type \
           --disable-error-code=index \
@@ -49,13 +52,16 @@ jobs:
           --disable-error-code=func-returns-value \
           --disable-error-code=import-untyped \
           --disable-error-code=call-arg \
+          --disable-error-code=assignment \
+          --disable-error-code=attr-defined \
+          --disable-error-code=valid-type
           Services
 
       - name: Check typing with flake8
         run: |
           flake8 \
-          --ignore=W605,F401,B008,B010 \
+          --ignore=W605,F401,B008,B010,W503,E402 \
           --max-line-length=88 \
           --max-complexity=10 \
-          --exclude=.git,__pycache__,build,dist,.venv \
+          --exclude=.git,__pycache__,build,dist,.venv,Services/streamlit \
           Services

@@ -43,7 +43,7 @@ jobs:
           --disallow-untyped-defs \
           --ignore-missing-imports \
           --explicit-package-bases \
-          --exclude Services/streamlit \
+          --exclude Services/streamlit/ \
 
           --disable-error-code=name-defined \
           --disable-error-code=arg-type \

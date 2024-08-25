@@ -45,6 +45,9 @@
 - Prometheus & Grafana: Services monitoring
 - Filebeat & Elasticsearch & Kibana: Services logging
 
+**Project structure:**
+![Project structure](/etc/Structure.png "Project structure")
+
 **Project assembling instruction:**
 
 1. Clone the repo on your machine
